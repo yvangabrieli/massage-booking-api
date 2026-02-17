@@ -24,12 +24,6 @@ spring:
     caffeine:
       spec: maximumSize=500,expireAfterWrite=3600s
 
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-    time-zone: UTC
-    default-property-inclusion: non_null
-
 server:
   port: 8080
   servlet:
