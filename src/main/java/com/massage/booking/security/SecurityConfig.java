@@ -18,70 +18,53 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Enables @PreAuthorize annotations
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsServiceImpl userDetailsService;
 
-    /**
-     * Security Filter Chain
-     * Defines which endpoints are public and which are protected
-     */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
-
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // ── Disable CSRF ──
-                // Not needed for stateless REST APIs
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // ── Stateless Session ──
-                // We use JWT, no server-side sessions
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
-                // ── Authorization Rules ──
                 .authorizeHttpRequests(auth -> auth
-
-                        // ✅ PUBLIC endpoints (no token needed)
+                        // Public - Auth
                         .requestMatchers("/v1/auth/**").permitAll()
+
+                        // Public - Swagger/OpenAPI
                         .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/v1/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui.html").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-resources/**").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+
+                        // Public - Actuator
                         .requestMatchers("/actuator/health").permitAll()
 
-                        // ✅ PUBLIC - View services (clients can browse)
+                        // Public - View services
                         .requestMatchers(HttpMethod.GET, "/v1/services/**").permitAll()
 
-                        // 🔒 ADMIN only endpoints
+                        // Admin only
                         .requestMatchers("/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/v1/services/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/v1/services/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/v1/services/**").hasAuthority("ROLE_ADMIN")
 
-                        // 🔒 All other endpoints require authentication
+                        // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
-
-                // ── Add JWT Filter ──
-                // Run our JWT filter before the default auth filter
-                .addFilterBefore(
-                        jwtAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                )
-
-                // ── Authentication Provider ──
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider());
 
         return http.build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -95,11 +78,8 @@ public class SecurityConfig {
         return provider;
     }
 
-
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config
-    ) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }
