@@ -29,7 +29,4 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
             @Param("active") Boolean active,
             Pageable pageable
     );
-
-
-    // Page<Client> findAll(Pageable pageable);
 }

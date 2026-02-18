@@ -25,14 +25,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    /**
-     * Register a new client account
-     *
-     * @Valid → triggers validation on RegisterRequest
-     * If validation fails → GlobalExceptionHandler catches it
-     *
-     * POST /api/v1/auth/register
-     */
     @PostMapping("/register")
     @Operation(summary = "Register new client",
             description = "Creates a new client account and returns JWT token")
@@ -47,11 +39,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    /**
-     * Login with phone and password
-     *
-     * POST /api/v1/auth/login
-     */
     @PostMapping("/login")
     @Operation(summary = "Login",
             description = "Authenticate with phone and password, returns JWT token")
