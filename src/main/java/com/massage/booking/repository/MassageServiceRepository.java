@@ -14,6 +14,5 @@ public interface MassageServiceRepository extends JpaRepository<MassageService, 
 
     List<MassageService> findByCategoryAndActiveTrue(ServiceCategory category);
 
-
     boolean existsByNameIgnoreCase(String name);
 }
