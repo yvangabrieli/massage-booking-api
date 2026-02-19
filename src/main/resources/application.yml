@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:mysql://localhost:3306/massage_booking_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:password}
+    username: root
+    password: ITacademy2026
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -44,7 +44,7 @@ management:
 
 springdoc:
   api-docs:
-    path: /v1/api-docs
+    path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
@@ -60,7 +60,7 @@ logging:
     name: logs/massage-booking-api.log
 
 jwt:
-  secret: ${JWT_SECRET:your-256-bit-secret-key-change-this-in-production-make-it-very-long-and-secure}
+  secret: your-256-bit-secret-key-change-this-in-production-make-it-very-long-and-secure
   expiration: 86400000
 
 booking:
