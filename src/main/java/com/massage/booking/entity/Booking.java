@@ -20,11 +20,19 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "client_id", nullable = false)
     private Long clientId;
 
-    @Column(nullable = false)
+    @Column(name = "service_id", nullable = false)
     private Long serviceId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", insertable = false, updatable = false)
+    private Client client;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_id", insertable = false, updatable = false)
+    private MassageService service;
 
     @Column(nullable = false)
     private LocalDateTime startTime;

@@ -18,8 +18,22 @@ public class ServiceResponse {
     private String name;
     private ServiceCategory category;
     private Integer durationMinutes;
-    private Integer cleanupMinutes;
     private String description;
     private Boolean active;
     private LocalDateTime createdAt;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AdminServiceResponse {
+        private Long id;
+        private String name;
+        private ServiceCategory category;
+        private Integer durationMinutes;
+        private Integer cleanupMinutes;
+        private String description;
+        private Boolean active;
+        private LocalDateTime createdAt;
+    }
 }

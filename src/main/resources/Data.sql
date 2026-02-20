@@ -53,3 +53,13 @@ VALUES
     (1, 1, DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(DATE_ADD(NOW(), INTERVAL 3 DAY), INTERVAL 70 MINUTE), 'BOOKED', NULL, NULL, NOW(), NOW()),
     (2, 3, DATE_ADD(NOW(), INTERVAL 5 DAY), DATE_ADD(DATE_ADD(NOW(), INTERVAL 5 DAY), INTERVAL 85 MINUTE), 'BOOKED', NULL, NULL, NOW(), NOW()),
     (1, 5, DATE_ADD(NOW(), INTERVAL -2 DAY), DATE_ADD(DATE_ADD(NOW(), INTERVAL -2 DAY), INTERVAL 55 MINUTE), 'COMPLETED', NULL, NULL, NOW(), NOW());
+
+    -- Add unique constraint to prevent overlapping bookings at DB level
+    -- This is a safety net in case application-level locking fails
+    CREATE INDEX idx_bookings_time_range ON bookings(start_time, end_time);
+    CREATE INDEX idx_bookings_status ON bookings(status);
+    CREATE INDEX idx_bookings_client ON bookings(client_id);
+
+    -- Partial index for active bookings only (optimization)
+    CREATE INDEX idx_active_bookings_time ON bookings(start_time, end_time)
+    WHERE status = 'BOOKED';

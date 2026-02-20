@@ -13,10 +13,12 @@ import com.massage.booking.repository.ClientRepository;
 import com.massage.booking.repository.MassageServiceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
@@ -31,10 +33,12 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final ClientRepository clientRepository;
     private final MassageServiceRepository serviceRepository;
+    private final TimeSlotService timeSlotService;
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public BookingResponse create(Long clientId, BookingRequest request) {
-        log.info("Creating booking for client: {}, service: {}", clientId, request.getServiceId());
+        log.info("Creating booking for client: {}, service: {}, time: {}",
+                clientId, request.getServiceId(), request.getStartTime());
 
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Client", clientId));
@@ -42,7 +46,11 @@ public class BookingService {
         MassageService service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service", request.getServiceId()));
 
-        validate2HourRule(request.getStartTime());
+        validateBookingRules(request.getStartTime());
+
+        if (!timeSlotService.isWorkingDay(request.getStartTime().toLocalDate())) {
+            throw new BusinessException("We are only open Thursday through Sunday", HttpStatus.BAD_REQUEST);
+        }
 
         LocalDateTime endTime = request.getStartTime().plusMinutes(service.getTotalMinutes());
 
@@ -57,48 +65,18 @@ public class BookingService {
                 request.getGuestPhone()
         );
 
-        Booking saved = bookingRepository.save(booking);
-        log.info("Booking created with id: {}", saved.getId());
+        Booking saved;
+        try {
+            saved = bookingRepository.save(booking);
+            timeSlotService.bookSlot(request.getStartTime());
+        } catch (DataIntegrityViolationException e) {
+            log.warn("Concurrent booking attempt detected for time slot: {}", request.getStartTime());
+            throw new BusinessException("Time slot was just booked by another user. Please select a different time.",
+                    HttpStatus.CONFLICT);
+        }
 
+        log.info("Booking created successfully with id: {}", saved.getId());
         return mapToResponse(saved, client, service);
-    }
-
-    @Transactional(readOnly = true)
-    public BookingResponse getById(Long id) {
-        log.info("Getting booking by id: {}", id);
-
-        Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
-
-        Client client = clientRepository.findById(booking.getClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client", booking.getClientId()));
-
-        MassageService service = serviceRepository.findById(booking.getServiceId())
-                .orElseThrow(() -> new ResourceNotFoundException("Service", booking.getServiceId()));
-
-        return mapToResponse(booking, client, service);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<BookingResponse> getAll(Pageable pageable, BookingStatus status) {
-        log.info("Getting all bookings - status: {}", status);
-
-        Page<Booking> bookings = status != null
-                ? bookingRepository.findByStatus(status, pageable)
-                : bookingRepository.findAll(pageable);
-
-        return bookings.map(this::mapToResponseSimple);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<BookingResponse> getByClient(Long clientId, Pageable pageable, BookingStatus status) {
-        log.info("Getting bookings for client: {}, status: {}", clientId, status);
-
-        Page<Booking> bookings = status != null
-                ? bookingRepository.findByClientIdAndStatus(clientId, status, pageable)
-                : bookingRepository.findByClientId(clientId, pageable);
-
-        return bookings.map(this::mapToResponseSimple);
     }
 
     @Transactional
@@ -116,63 +94,71 @@ public class BookingService {
             booking.adminCancel(reason);
         } else {
             if (!booking.canBeCanceled()) {
-                throw new BusinessException(
-                        "Cannot cancel within 12 hours of appointment",
-                        HttpStatus.CONFLICT
-                );
+                throw new BusinessException("Cannot cancel within 12 hours of appointment", HttpStatus.CONFLICT);
             }
             booking.cancel(null);
         }
 
         bookingRepository.save(booking);
+        timeSlotService.releaseSlot(booking.getStartTime());
         log.info("Booking canceled: {}", id);
     }
 
-    private void validate2HourRule(LocalDateTime startTime) {
-        Duration until = Duration.between(LocalDateTime.now(), startTime);
-        if (until.toHours() < 2) {
-            throw new BusinessException(
-                    "Must book at least 2 hours in advance",
-                    HttpStatus.BAD_REQUEST
-            );
-        }
+    @Transactional(readOnly = true)
+    public BookingResponse getById(Long id) {
+        log.info("Getting booking by id: {}", id);
+
+        Booking booking = bookingRepository.findByIdWithDetails(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
+
+        return mapToResponse(booking, booking.getClient(), booking.getService());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BookingResponse> getAll(Pageable pageable, BookingStatus status) {
+        log.info("Getting all bookings - status: {}", status);
+
+        Page<Booking> bookings = status != null
+                ? bookingRepository.findByStatus(status, pageable)
+                : bookingRepository.findAll(pageable);
+
+        return bookings.map(this::mapToResponseFromJoin);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BookingResponse> getByClient(Long clientId, Pageable pageable, BookingStatus status) {
+        log.info("Getting bookings for client: {}, status: {}", clientId, status);
+
+        Page<Booking> bookings = status != null
+                ? bookingRepository.findByClientIdAndStatus(clientId, status, pageable)
+                : bookingRepository.findByClientId(clientId, pageable);
+
+        return bookings.map(this::mapToResponseFromJoin);
     }
 
     private void checkAvailability(LocalDateTime startTime, LocalDateTime endTime) {
+        if (!timeSlotService.isTimeSlotAvailable(startTime)) {
+            throw new BusinessException("Selected time slot is not available", HttpStatus.CONFLICT);
+        }
+
         List<Booking> conflicts = bookingRepository.findConflictingBookings(startTime, endTime);
         if (!conflicts.isEmpty()) {
             throw new BusinessException("Time slot already booked", HttpStatus.CONFLICT);
         }
     }
 
-    private BookingResponse mapToResponse(Booking booking, Client client, MassageService service) {
-        return BookingResponse.builder()
-                .id(booking.getId())
-                .client(BookingResponse.ClientInfo.builder()
-                        .id(client.getId())
-                        .name(client.getName())
-                        .phone(client.getPhoneNumber())
-                        .build())
-                .service(BookingResponse.ServiceInfo.builder()
-                        .id(service.getId())
-                        .name(service.getName())
-                        .durationMinutes(service.getDurationMinutes())
-                        .build())
-                .startTime(booking.getStartTime())
-                .endTime(booking.getEndTime())
-                .status(booking.getStatus())
-                .guestName(booking.getGuestName())
-                .guestPhone(booking.getGuestPhone())
-                .canceledReason(booking.getCanceledReason())
-                .canCancel(booking.canBeCanceled())
-                .createdAt(booking.getCreatedAt())
-                .build();
+    private void validateBookingRules(LocalDateTime startTime) {
+        Duration until = Duration.between(LocalDateTime.now(), startTime);
+
+        if (until.toHours() < 2) {
+            throw new BusinessException("Must book at least 2 hours in advance", HttpStatus.BAD_REQUEST);
+        }
+        if (until.toDays() > 90) {
+            throw new BusinessException("Cannot book more than 3 months in advance", HttpStatus.BAD_REQUEST);
+        }
     }
 
-    private BookingResponse mapToResponseSimple(Booking booking) {
-        Client client = clientRepository.findById(booking.getClientId()).orElse(null);
-        MassageService service = serviceRepository.findById(booking.getServiceId()).orElse(null);
-
+    private BookingResponse mapToResponse(Booking booking, Client client, MassageService service) {
         return BookingResponse.builder()
                 .id(booking.getId())
                 .client(client != null ? BookingResponse.ClientInfo.builder()
@@ -188,8 +174,15 @@ public class BookingService {
                 .startTime(booking.getStartTime())
                 .endTime(booking.getEndTime())
                 .status(booking.getStatus())
+                .guestName(booking.getGuestName())
+                .guestPhone(booking.getGuestPhone())
+                .canceledReason(booking.getCanceledReason())
                 .canCancel(booking.canBeCanceled())
                 .createdAt(booking.getCreatedAt())
                 .build();
+    }
+
+    private BookingResponse mapToResponseFromJoin(Booking booking) {
+        return mapToResponse(booking, booking.getClient(), booking.getService());
     }
 }

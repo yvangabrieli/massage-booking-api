@@ -14,7 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-
     Optional<Client> findByPhone(Phone phone);
 
     boolean existsByPhone(Phone phone);
@@ -23,7 +22,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     @Query("SELECT c FROM Client c WHERE " +
             "LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "AND c.active = :active")
+            "AND (:active IS NULL OR c.active = :active)")
     Page<Client> searchClients(
             @Param("search") String search,
             @Param("active") Boolean active,

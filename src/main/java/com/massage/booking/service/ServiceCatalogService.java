@@ -2,7 +2,6 @@ package com.massage.booking.service;
 
 import com.massage.booking.dto.request.ServiceRequest;
 import com.massage.booking.dto.response.ServiceResponse;
-import com.massage.booking.entity.MassageService;
 import com.massage.booking.entity.enums.ServiceCategory;
 import com.massage.booking.exception.DuplicateResourceException;
 import com.massage.booking.exception.ResourceNotFoundException;
@@ -18,21 +17,19 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MassageServiceService {
+public class ServiceCatalogService {
 
     private final MassageServiceRepository serviceRepository;
 
     @Transactional
-    public ServiceResponse create(ServiceRequest request) {
+    public ServiceResponse.AdminServiceResponse create(ServiceRequest request) {
         log.info("Creating service: {}", request.getName());
 
         if (serviceRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new DuplicateResourceException(
-                    "Service with name already exists: " + request.getName()
-            );
+            throw new DuplicateResourceException("Service with name already exists: " + request.getName());
         }
 
-        MassageService service = MassageService.create(
+        com.massage.booking.entity.MassageService service = com.massage.booking.entity.MassageService.create(
                 request.getName(),
                 request.getCategory(),
                 request.getDurationMinutes(),
@@ -40,27 +37,32 @@ public class MassageServiceService {
                 request.getDescription()
         );
 
-        MassageService saved = serviceRepository.save(service);
+        com.massage.booking.entity.MassageService saved = serviceRepository.save(service);
         log.info("Service created with id: {}", saved.getId());
-
-        return mapToResponse(saved);
+        return mapToAdminResponse(saved);
     }
 
     @Transactional(readOnly = true)
     public ServiceResponse getById(Long id) {
         log.info("Getting service by id: {}", id);
-
-        MassageService service = serviceRepository.findById(id)
+        com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service", id));
+        return mapToPublicResponse(service);
+    }
 
-        return mapToResponse(service);
+    @Transactional(readOnly = true)
+    public ServiceResponse.AdminServiceResponse getByIdAdmin(Long id) {
+        log.info("Getting service (admin) by id: {}", id);
+        com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Service", id));
+        return mapToAdminResponse(service);
     }
 
     @Transactional(readOnly = true)
     public List<ServiceResponse> getAll(ServiceCategory category, Boolean activeOnly) {
         log.info("Getting all services - category: {}, activeOnly: {}", category, activeOnly);
 
-        List<MassageService> services;
+        List<com.massage.booking.entity.MassageService> services;
 
         if (category != null && (activeOnly == null || activeOnly)) {
             services = serviceRepository.findByCategoryAndActiveTrue(category);
@@ -70,16 +72,14 @@ public class MassageServiceService {
             services = serviceRepository.findAll();
         }
 
-        return services.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+        return services.stream().map(this::mapToPublicResponse).collect(Collectors.toList());
     }
 
     @Transactional
-    public ServiceResponse update(Long id, ServiceRequest request) {
+    public ServiceResponse.AdminServiceResponse update(Long id, ServiceRequest request) {
         log.info("Updating service id: {}", id);
 
-        MassageService service = serviceRepository.findById(id)
+        com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service", id));
 
         service.updateDetails(
@@ -90,27 +90,37 @@ public class MassageServiceService {
                 request.getDescription()
         );
 
-        MassageService updated = serviceRepository.save(service);
+        com.massage.booking.entity.MassageService updated = serviceRepository.save(service);
         log.info("Service updated: {}", id);
-
-        return mapToResponse(updated);
+        return mapToAdminResponse(updated);
     }
 
     @Transactional
     public void delete(Long id) {
         log.info("Deleting service id: {}", id);
 
-        MassageService service = serviceRepository.findById(id)
+        com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service", id));
 
         service.deactivate();
         serviceRepository.save(service);
-
         log.info("Service deactivated: {}", id);
     }
 
-    private ServiceResponse mapToResponse(MassageService service) {
+    private ServiceResponse mapToPublicResponse(com.massage.booking.entity.MassageService service) {
         return ServiceResponse.builder()
+                .id(service.getId())
+                .name(service.getName())
+                .category(service.getCategory())
+                .durationMinutes(service.getDurationMinutes())
+                .description(service.getDescription())
+                .active(service.getActive())
+                .createdAt(service.getCreatedAt())
+                .build();
+    }
+
+    private ServiceResponse.AdminServiceResponse mapToAdminResponse(com.massage.booking.entity.MassageService service) {
+        return ServiceResponse.AdminServiceResponse.builder()
                 .id(service.getId())
                 .name(service.getName())
                 .category(service.getCategory())

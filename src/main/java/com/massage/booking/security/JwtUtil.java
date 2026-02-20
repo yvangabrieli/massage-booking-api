@@ -21,7 +21,6 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-
     public String generateToken(String phone, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
@@ -42,9 +41,7 @@ public class JwtUtil {
                     .build()
                     .parseSignedClaims(token);
             return true;
-
         } catch (Exception e) {
-            // Token is invalid (expired, tampered, malformed)
             log.warn("Invalid JWT token: {}", e.getMessage());
             return false;
         }
@@ -59,8 +56,11 @@ public class JwtUtil {
     }
 
     public boolean isTokenExpired(String token) {
-        Date expiry = extractClaims(token).getExpiration();
-        return expiry.before(new Date());
+        return extractClaims(token).getExpiration().before(new Date());
+    }
+
+    public Long getExpiration() {
+        return expiration;
     }
 
     private Claims extractClaims(String token) {
@@ -70,7 +70,6 @@ public class JwtUtil {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);

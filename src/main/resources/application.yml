@@ -11,7 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -44,10 +44,12 @@ management:
 
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+    config-url: /api/v3/api-docs/swagger-config
+    url: /api/v3/api-docs
 
 logging:
   level:
@@ -60,7 +62,7 @@ logging:
     name: logs/massage-booking-api.log
 
 jwt:
-  secret: your-256-bit-secret-key-change-this-in-production-make-it-very-long-and-secure
+  secret: T0k4m3M4ss4g3S3cr3tK3y2026!XyZ#mNpQrStUvWxAbCdEfGhIjKlMnOpQrStUv
   expiration: 86400000
 
 booking:
