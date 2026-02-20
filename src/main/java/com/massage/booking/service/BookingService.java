@@ -13,10 +13,12 @@ import com.massage.booking.repository.ClientRepository;
 import com.massage.booking.repository.MassageServiceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
@@ -31,23 +33,36 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final ClientRepository clientRepository;
     private final MassageServiceRepository serviceRepository;
+    private final TimeSlotService timeSlotService; // NOW INCLUDED!
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public BookingResponse create(Long clientId, BookingRequest request) {
-        log.info("Creating booking for client: {}, service: {}", clientId, request.getServiceId());
+        log.info("Creating booking for client: {}, service: {}, time: {}",
+                clientId, request.getServiceId(), request.getStartTime());
 
+        // 1. Validate client exists
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Client", clientId));
 
+        // 2. Validate service exists
         MassageService service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service", request.getServiceId()));
 
-        validate2HourRule(request.getStartTime());
+        // 3. Validate business rules (2 hours advance, etc.)
+        validateBookingRules(request.getStartTime());
 
+        // 4. Check if it's a working day (Thu-Sun) using TimeSlotService
+        if (!timeSlotService.isWorkingDay(request.getStartTime().toLocalDate())) {
+            throw new BusinessException("We are only open Thursday through Sunday", HttpStatus.BAD_REQUEST);
+        }
+
+        // 5. Calculate end time
         LocalDateTime endTime = request.getStartTime().plusMinutes(service.getTotalMinutes());
 
+        // 6. Check availability using TimeSlotService AND prevent double booking
         checkAvailability(request.getStartTime(), endTime);
 
+        // 7. Create booking
         Booking booking = Booking.create(
                 clientId,
                 service.getId(),
@@ -57,11 +72,78 @@ public class BookingService {
                 request.getGuestPhone()
         );
 
-        Booking saved = bookingRepository.save(booking);
-        log.info("Booking created with id: {}", saved.getId());
+        // 8. Save booking and mark slot as booked
+        Booking saved;
+        try {
+            saved = bookingRepository.save(booking);
+            // Mark the slot as booked in time_slots table
+            timeSlotService.bookSlot(request.getStartTime());
+        } catch (DataIntegrityViolationException e) {
+            log.warn("Concurrent booking attempt detected for time slot: {}", request.getStartTime());
+            throw new BusinessException("Time slot was just booked by another user. Please select a different time.",
+                    HttpStatus.CONFLICT);
+        }
 
+        log.info("Booking created successfully with id: {}", saved.getId());
         return mapToResponse(saved, client, service);
     }
+
+    @Transactional
+    public void cancel(Long id, Long clientId, boolean isAdmin, String reason) {
+        log.info("Canceling booking: {}, admin: {}", id, isAdmin);
+
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
+
+        if (!isAdmin && !booking.getClientId().equals(clientId)) {
+            throw new BusinessException("Cannot cancel other client's booking", HttpStatus.FORBIDDEN);
+        }
+
+        if (isAdmin) {
+            booking.adminCancel(reason);
+        } else {
+            if (!booking.canBeCanceled()) {
+                throw new BusinessException(
+                        "Cannot cancel within 12 hours of appointment",
+                        HttpStatus.CONFLICT
+                );
+            }
+            booking.cancel(null);
+        }
+
+        bookingRepository.save(booking);
+
+        // Release the time slot
+        timeSlotService.releaseSlot(booking.getStartTime());
+
+        log.info("Booking canceled: {}", id);
+    }
+
+    private void checkAvailability(LocalDateTime startTime, LocalDateTime endTime) {
+        // Check using TimeSlotService for the start time
+        if (!timeSlotService.isTimeSlotAvailable(startTime)) {
+            throw new BusinessException("Selected time slot is not available", HttpStatus.CONFLICT);
+        }
+
+        // Also check for conflicting bookings (backup safety)
+        List<Booking> conflicts = bookingRepository.findConflictingBookings(startTime, endTime);
+        if (!conflicts.isEmpty()) {
+            throw new BusinessException("Time slot already booked", HttpStatus.CONFLICT);
+        }
+    }
+
+    private void validateBookingRules(LocalDateTime startTime) {
+        Duration until = Duration.between(LocalDateTime.now(), startTime);
+
+        if (until.toHours() < 2) {
+            throw new BusinessException("Must book at least 2 hours in advance", HttpStatus.BAD_REQUEST);
+        }
+        if (until.toDays() > 90) {
+            throw new BusinessException("Cannot book more than 3 months in advance", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    // ... keep all your other existing methods (getById, getAll, getByClient, mapToResponse, etc.) ...
 
     @Transactional(readOnly = true)
     public BookingResponse getById(Long id) {
@@ -99,50 +181,6 @@ public class BookingService {
                 : bookingRepository.findByClientId(clientId, pageable);
 
         return bookings.map(this::mapToResponseSimple);
-    }
-
-    @Transactional
-    public void cancel(Long id, Long clientId, boolean isAdmin, String reason) {
-        log.info("Canceling booking: {}, admin: {}", id, isAdmin);
-
-        Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
-
-        if (!isAdmin && !booking.getClientId().equals(clientId)) {
-            throw new BusinessException("Cannot cancel other client's booking", HttpStatus.FORBIDDEN);
-        }
-
-        if (isAdmin) {
-            booking.adminCancel(reason);
-        } else {
-            if (!booking.canBeCanceled()) {
-                throw new BusinessException(
-                        "Cannot cancel within 12 hours of appointment",
-                        HttpStatus.CONFLICT
-                );
-            }
-            booking.cancel(null);
-        }
-
-        bookingRepository.save(booking);
-        log.info("Booking canceled: {}", id);
-    }
-
-    private void validate2HourRule(LocalDateTime startTime) {
-        Duration until = Duration.between(LocalDateTime.now(), startTime);
-        if (until.toHours() < 2) {
-            throw new BusinessException(
-                    "Must book at least 2 hours in advance",
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-    }
-
-    private void checkAvailability(LocalDateTime startTime, LocalDateTime endTime) {
-        List<Booking> conflicts = bookingRepository.findConflictingBookings(startTime, endTime);
-        if (!conflicts.isEmpty()) {
-            throw new BusinessException("Time slot already booked", HttpStatus.CONFLICT);
-        }
     }
 
     private BookingResponse mapToResponse(Booking booking, Client client, MassageService service) {
