@@ -25,37 +25,23 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    // ──────────────────────────────────────────
-    // REGISTER
-    // ──────────────────────────────────────────
-
-
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         log.info("Registering new user with phone: {}", request.getPhone());
 
-        // Step 1: Check phone not already taken
-        // Phone Value Object validates format automatically
         Phone phone = Phone.of(request.getPhone());
 
         if (userRepository.existsByPhone(phone)) {
-            throw new DuplicateResourceException(
-                    "Phone number already registered: " + request.getPhone()
-            );
+            throw new DuplicateResourceException("Phone number already registered: " + request.getPhone());
         }
 
-        // Step 2: Check email not already taken (if provided)
         if (request.getEmail() != null && !request.getEmail().isBlank()) {
             Email email = Email.of(request.getEmail());
             if (userRepository.existsByEmail(email)) {
-                throw new DuplicateResourceException(
-                        "Email already registered: " + request.getEmail()
-                );
+                throw new DuplicateResourceException("Email already registered: " + request.getEmail());
             }
         }
 
-        // Step 3: Create user using our DDD factory method
-        // Value Objects validate: email format, phone format, password strength
         User user = User.createClient(
                 request.getName(),
                 request.getPhone(),
@@ -64,73 +50,44 @@ public class AuthService {
                 passwordEncoder
         );
 
-        // Step 4: Save to database
         User savedUser = userRepository.save(user);
         log.info("User registered successfully with id: {}", savedUser.getId());
-
-        // Step 5 & 6: Generate token and return response
         return buildAuthResponse(savedUser);
     }
-
-    // ──────────────────────────────────────────
-    // LOGIN
-    // ──────────────────────────────────────────
-
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
         log.info("Login attempt for phone: {}", request.getPhone());
 
-        // Step 1: Find user by phone
         Phone phone = Phone.of(request.getPhone());
 
-        User user = userRepository
-                .findByPhone(phone)
+        User user = userRepository.findByPhone(phone)
                 .orElseThrow(() -> {
                     log.warn("Login failed - phone not found: {}", request.getPhone());
-                    // ✅ Generic message - don't reveal if phone exists!
                     return new UnauthorizedException("Invalid phone or password");
                 });
 
-        // Step 2: Check user is active
         if (!user.canLogin()) {
             log.warn("Login failed - user deactivated: {}", request.getPhone());
             throw new UnauthorizedException("Account is deactivated");
         }
 
-        // Step 3: Verify password using our Value Object method
         if (!user.checkPassword(request.getPassword(), passwordEncoder)) {
             log.warn("Login failed - wrong password: {}", request.getPhone());
-            // ✅ Same generic message for security!
             throw new UnauthorizedException("Invalid phone or password");
         }
 
         log.info("Login successful for user: {}", user.getId());
-
-        // Step 4 & 5: Generate token and return response
         return buildAuthResponse(user);
     }
 
-    // ──────────────────────────────────────────
-    // PRIVATE HELPERS
-    // ──────────────────────────────────────────
-
-    /**
-     * Build the auth response with token and user info
-     * Reused by both register and login
-     */
     private AuthResponse buildAuthResponse(User user) {
-        // Generate JWT token
-        String token = jwtUtil.generateToken(
-                user.getPhoneNumber(),
-                user.getRole().name()
-        );
+        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getRole().name());
 
-        // Build response
         return AuthResponse.builder()
                 .token(token)
                 .type("Bearer")
-                .expiresIn(86400000L) // 24 hours in milliseconds
+                .expiresIn(jwtUtil.getExpiration())
                 .user(AuthResponse.UserInfo.builder()
                         .id(user.getId())
                         .name(user.getName())

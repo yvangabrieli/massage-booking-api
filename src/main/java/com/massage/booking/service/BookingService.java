@@ -33,36 +33,29 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final ClientRepository clientRepository;
     private final MassageServiceRepository serviceRepository;
-    private final TimeSlotService timeSlotService; // NOW INCLUDED!
+    private final TimeSlotService timeSlotService;
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public BookingResponse create(Long clientId, BookingRequest request) {
         log.info("Creating booking for client: {}, service: {}, time: {}",
                 clientId, request.getServiceId(), request.getStartTime());
 
-        // 1. Validate client exists
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Client", clientId));
 
-        // 2. Validate service exists
         MassageService service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service", request.getServiceId()));
 
-        // 3. Validate business rules (2 hours advance, etc.)
         validateBookingRules(request.getStartTime());
 
-        // 4. Check if it's a working day (Thu-Sun) using TimeSlotService
         if (!timeSlotService.isWorkingDay(request.getStartTime().toLocalDate())) {
             throw new BusinessException("We are only open Thursday through Sunday", HttpStatus.BAD_REQUEST);
         }
 
-        // 5. Calculate end time
         LocalDateTime endTime = request.getStartTime().plusMinutes(service.getTotalMinutes());
 
-        // 6. Check availability using TimeSlotService AND prevent double booking
         checkAvailability(request.getStartTime(), endTime);
 
-        // 7. Create booking
         Booking booking = Booking.create(
                 clientId,
                 service.getId(),
@@ -72,11 +65,9 @@ public class BookingService {
                 request.getGuestPhone()
         );
 
-        // 8. Save booking and mark slot as booked
         Booking saved;
         try {
             saved = bookingRepository.save(booking);
-            // Mark the slot as booked in time_slots table
             timeSlotService.bookSlot(request.getStartTime());
         } catch (DataIntegrityViolationException e) {
             log.warn("Concurrent booking attempt detected for time slot: {}", request.getStartTime());
@@ -103,29 +94,53 @@ public class BookingService {
             booking.adminCancel(reason);
         } else {
             if (!booking.canBeCanceled()) {
-                throw new BusinessException(
-                        "Cannot cancel within 12 hours of appointment",
-                        HttpStatus.CONFLICT
-                );
+                throw new BusinessException("Cannot cancel within 12 hours of appointment", HttpStatus.CONFLICT);
             }
             booking.cancel(null);
         }
 
         bookingRepository.save(booking);
-
-        // Release the time slot
         timeSlotService.releaseSlot(booking.getStartTime());
-
         log.info("Booking canceled: {}", id);
     }
 
+    @Transactional(readOnly = true)
+    public BookingResponse getById(Long id) {
+        log.info("Getting booking by id: {}", id);
+
+        Booking booking = bookingRepository.findByIdWithDetails(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
+
+        return mapToResponse(booking, booking.getClient(), booking.getService());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BookingResponse> getAll(Pageable pageable, BookingStatus status) {
+        log.info("Getting all bookings - status: {}", status);
+
+        Page<Booking> bookings = status != null
+                ? bookingRepository.findByStatus(status, pageable)
+                : bookingRepository.findAll(pageable);
+
+        return bookings.map(this::mapToResponseFromJoin);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BookingResponse> getByClient(Long clientId, Pageable pageable, BookingStatus status) {
+        log.info("Getting bookings for client: {}, status: {}", clientId, status);
+
+        Page<Booking> bookings = status != null
+                ? bookingRepository.findByClientIdAndStatus(clientId, status, pageable)
+                : bookingRepository.findByClientId(clientId, pageable);
+
+        return bookings.map(this::mapToResponseFromJoin);
+    }
+
     private void checkAvailability(LocalDateTime startTime, LocalDateTime endTime) {
-        // Check using TimeSlotService for the start time
         if (!timeSlotService.isTimeSlotAvailable(startTime)) {
             throw new BusinessException("Selected time slot is not available", HttpStatus.CONFLICT);
         }
 
-        // Also check for conflicting bookings (backup safety)
         List<Booking> conflicts = bookingRepository.findConflictingBookings(startTime, endTime);
         if (!conflicts.isEmpty()) {
             throw new BusinessException("Time slot already booked", HttpStatus.CONFLICT);
@@ -143,74 +158,7 @@ public class BookingService {
         }
     }
 
-    // ... keep all your other existing methods (getById, getAll, getByClient, mapToResponse, etc.) ...
-
-    @Transactional(readOnly = true)
-    public BookingResponse getById(Long id) {
-        log.info("Getting booking by id: {}", id);
-
-        Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
-
-        Client client = clientRepository.findById(booking.getClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client", booking.getClientId()));
-
-        MassageService service = serviceRepository.findById(booking.getServiceId())
-                .orElseThrow(() -> new ResourceNotFoundException("Service", booking.getServiceId()));
-
-        return mapToResponse(booking, client, service);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<BookingResponse> getAll(Pageable pageable, BookingStatus status) {
-        log.info("Getting all bookings - status: {}", status);
-
-        Page<Booking> bookings = status != null
-                ? bookingRepository.findByStatus(status, pageable)
-                : bookingRepository.findAll(pageable);
-
-        return bookings.map(this::mapToResponseSimple);
-    }
-
-    @Transactional(readOnly = true)
-    public Page<BookingResponse> getByClient(Long clientId, Pageable pageable, BookingStatus status) {
-        log.info("Getting bookings for client: {}, status: {}", clientId, status);
-
-        Page<Booking> bookings = status != null
-                ? bookingRepository.findByClientIdAndStatus(clientId, status, pageable)
-                : bookingRepository.findByClientId(clientId, pageable);
-
-        return bookings.map(this::mapToResponseSimple);
-    }
-
     private BookingResponse mapToResponse(Booking booking, Client client, MassageService service) {
-        return BookingResponse.builder()
-                .id(booking.getId())
-                .client(BookingResponse.ClientInfo.builder()
-                        .id(client.getId())
-                        .name(client.getName())
-                        .phone(client.getPhoneNumber())
-                        .build())
-                .service(BookingResponse.ServiceInfo.builder()
-                        .id(service.getId())
-                        .name(service.getName())
-                        .durationMinutes(service.getDurationMinutes())
-                        .build())
-                .startTime(booking.getStartTime())
-                .endTime(booking.getEndTime())
-                .status(booking.getStatus())
-                .guestName(booking.getGuestName())
-                .guestPhone(booking.getGuestPhone())
-                .canceledReason(booking.getCanceledReason())
-                .canCancel(booking.canBeCanceled())
-                .createdAt(booking.getCreatedAt())
-                .build();
-    }
-
-    private BookingResponse mapToResponseSimple(Booking booking) {
-        Client client = clientRepository.findById(booking.getClientId()).orElse(null);
-        MassageService service = serviceRepository.findById(booking.getServiceId()).orElse(null);
-
         return BookingResponse.builder()
                 .id(booking.getId())
                 .client(client != null ? BookingResponse.ClientInfo.builder()
@@ -226,8 +174,15 @@ public class BookingService {
                 .startTime(booking.getStartTime())
                 .endTime(booking.getEndTime())
                 .status(booking.getStatus())
+                .guestName(booking.getGuestName())
+                .guestPhone(booking.getGuestPhone())
+                .canceledReason(booking.getCanceledReason())
                 .canCancel(booking.canBeCanceled())
                 .createdAt(booking.getCreatedAt())
                 .build();
+    }
+
+    private BookingResponse mapToResponseFromJoin(Booking booking) {
+        return mapToResponse(booking, booking.getClient(), booking.getService());
     }
 }

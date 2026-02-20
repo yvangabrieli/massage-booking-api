@@ -18,7 +18,6 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    // PESSIMISTIC_WRITE locks rows until transaction commits
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT b FROM Booking b WHERE b.status = 'BOOKED' AND " +
             "b.startTime < :endTime AND b.endTime > :startTime")
@@ -27,20 +26,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("endTime") LocalDateTime endTime
     );
 
-    // Alternative: Use native query with FOR UPDATE (more explicit)
-    @Query(value = "SELECT * FROM bookings b WHERE b.status = 'BOOKED' AND " +
-            "b.start_time < :endTime AND b.end_time > :startTime " +
-            "FOR UPDATE", nativeQuery = true)
-    List<Booking> findConflictingBookingsNative(
-            @Param("startTime") LocalDateTime startTime,
-            @Param("endTime") LocalDateTime endTime
-    );
-
-    // Optimized query with JOIN FETCH to prevent N+1
     @Query("SELECT b FROM Booking b LEFT JOIN FETCH b.client LEFT JOIN FETCH b.service WHERE b.id = :id")
     Optional<Booking> findByIdWithDetails(@Param("id") Long id);
 
-    // Existing methods...
     List<Booking> findByClientId(Long clientId);
 
     Page<Booking> findByClientId(Long clientId, Pageable pageable);

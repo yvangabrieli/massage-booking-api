@@ -17,18 +17,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MassageService {
+public class ServiceCatalogService {
 
     private final MassageServiceRepository serviceRepository;
 
     @Transactional
-    public ServiceResponse create(ServiceRequest request) {
+    public ServiceResponse.AdminServiceResponse create(ServiceRequest request) {
         log.info("Creating service: {}", request.getName());
 
         if (serviceRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new DuplicateResourceException(
-                    "Service with name already exists: " + request.getName()
-            );
+            throw new DuplicateResourceException("Service with name already exists: " + request.getName());
         }
 
         com.massage.booking.entity.MassageService service = com.massage.booking.entity.MassageService.create(
@@ -41,18 +39,23 @@ public class MassageService {
 
         com.massage.booking.entity.MassageService saved = serviceRepository.save(service);
         log.info("Service created with id: {}", saved.getId());
-
-        return mapToResponse(saved);
+        return mapToAdminResponse(saved);
     }
 
     @Transactional(readOnly = true)
     public ServiceResponse getById(Long id) {
         log.info("Getting service by id: {}", id);
-
         com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service", id));
+        return mapToPublicResponse(service);
+    }
 
-        return mapToResponse(service);
+    @Transactional(readOnly = true)
+    public ServiceResponse.AdminServiceResponse getByIdAdmin(Long id) {
+        log.info("Getting service (admin) by id: {}", id);
+        com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Service", id));
+        return mapToAdminResponse(service);
     }
 
     @Transactional(readOnly = true)
@@ -69,13 +72,11 @@ public class MassageService {
             services = serviceRepository.findAll();
         }
 
-        return services.stream()
-                .map(this::mapToResponse)
-                .collect(Collectors.toList());
+        return services.stream().map(this::mapToPublicResponse).collect(Collectors.toList());
     }
 
     @Transactional
-    public ServiceResponse update(Long id, ServiceRequest request) {
+    public ServiceResponse.AdminServiceResponse update(Long id, ServiceRequest request) {
         log.info("Updating service id: {}", id);
 
         com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
@@ -91,8 +92,7 @@ public class MassageService {
 
         com.massage.booking.entity.MassageService updated = serviceRepository.save(service);
         log.info("Service updated: {}", id);
-
-        return mapToResponse(updated);
+        return mapToAdminResponse(updated);
     }
 
     @Transactional
@@ -104,12 +104,23 @@ public class MassageService {
 
         service.deactivate();
         serviceRepository.save(service);
-
         log.info("Service deactivated: {}", id);
     }
 
-    private ServiceResponse mapToResponse(com.massage.booking.entity.MassageService service) {
+    private ServiceResponse mapToPublicResponse(com.massage.booking.entity.MassageService service) {
         return ServiceResponse.builder()
+                .id(service.getId())
+                .name(service.getName())
+                .category(service.getCategory())
+                .durationMinutes(service.getDurationMinutes())
+                .description(service.getDescription())
+                .active(service.getActive())
+                .createdAt(service.getCreatedAt())
+                .build();
+    }
+
+    private ServiceResponse.AdminServiceResponse mapToAdminResponse(com.massage.booking.entity.MassageService service) {
+        return ServiceResponse.AdminServiceResponse.builder()
                 .id(service.getId())
                 .name(service.getName())
                 .category(service.getCategory())

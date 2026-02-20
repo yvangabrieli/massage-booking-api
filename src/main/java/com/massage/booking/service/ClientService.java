@@ -28,9 +28,7 @@ public class ClientService {
         Phone phone = Phone.of(request.getPhone());
 
         if (clientRepository.existsByPhone(phone)) {
-            throw new DuplicateResourceException(
-                    "Client with phone already exists: " + request.getPhone()
-            );
+            throw new DuplicateResourceException("Client with phone already exists: " + request.getPhone());
         }
 
         Client client = Client.create(
@@ -44,17 +42,14 @@ public class ClientService {
 
         Client saved = clientRepository.save(client);
         log.info("Client created with id: {}", saved.getId());
-
         return mapToResponse(saved);
     }
 
     @Transactional(readOnly = true)
     public ClientResponse getById(Long id) {
         log.info("Getting client by id: {}", id);
-
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Client", id));
-
         return mapToResponse(client);
     }
 
@@ -65,9 +60,11 @@ public class ClientService {
 
         Page<Client> clients;
 
-        if (search != null && !search.isBlank()) {
+        if (search != null && !search.isBlank() && active != null) {
             clients = clientRepository.searchClients(search, active, pageable);
-        } else if (active != null && active) {
+        } else if (search != null && !search.isBlank()) {
+            clients = clientRepository.searchClients(search, null, pageable);
+        } else if (Boolean.TRUE.equals(active)) {
             clients = clientRepository.findByActiveTrue(pageable);
         } else {
             clients = clientRepository.findAll(pageable);
@@ -92,7 +89,6 @@ public class ClientService {
 
         Client updated = clientRepository.save(client);
         log.info("Client updated: {}", id);
-
         return mapToResponse(updated);
     }
 
@@ -105,7 +101,6 @@ public class ClientService {
 
         client.deactivate();
         clientRepository.save(client);
-
         log.info("Client deactivated: {}", id);
     }
 

@@ -3,6 +3,8 @@ package com.massage.booking.controller;
 import com.massage.booking.dto.request.BookingRequest;
 import com.massage.booking.dto.response.BookingResponse;
 import com.massage.booking.entity.enums.BookingStatus;
+import com.massage.booking.repository.UserRepository;
+import com.massage.booking.entity.valueobject.Phone;
 import com.massage.booking.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,11 +28,12 @@ import org.springframework.web.bind.annotation.*;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final UserRepository userRepository;
 
     @PostMapping
     @Operation(summary = "Create new booking")
     public ResponseEntity<BookingResponse> create(
-            @Valid @RequestBody BookingRequest request,  // Add @Valid here
+            @Valid @RequestBody BookingRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
 
         Long clientId = extractClientId(userDetails);
@@ -81,8 +84,9 @@ public class BookingController {
     }
 
     private Long extractClientId(UserDetails userDetails) {
-        // Implementation depends on your UserDetails structure
-        // This is a placeholder - adjust based on your actual implementation
-        return Long.valueOf(userDetails.getUsername());
+        Phone phone = Phone.of(userDetails.getUsername());
+        return userRepository.findByPhone(phone)
+                .orElseThrow(() -> new IllegalStateException("Authenticated user not found"))
+                .getId();
     }
 }

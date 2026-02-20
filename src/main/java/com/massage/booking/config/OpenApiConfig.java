@@ -28,8 +28,8 @@ import org.springframework.context.annotation.Configuration;
             
             ## Authentication
             Most endpoints require authentication via JWT token.
-            1. Register a new account using `/api/v1/auth/register`
-            2. Login using `/api/v1/auth/login` to receive a JWT token
+            1. Register a new account using `/v1/auth/register`
+            2. Login using `/v1/auth/login` to receive a JWT token
             3. Include the token in the Authorization header: `Bearer <token>`
             
             ## Roles
@@ -38,15 +38,9 @@ import org.springframework.context.annotation.Configuration;
             
             ## Business Rules
             - Bookings must be made at least **2 hours in advance**
-            - Clients can cancel/reschedule only if **≥12 hours before** appointment
+            - Clients can cancel only if **≥12 hours before** appointment
             - Each service includes **10 minutes cleanup time** (hidden from clients)
             - Admins can override time rules
-            
-            ## Rate Limiting
-            API requests may be rate-limited to prevent abuse.
-            
-            ## Support
-            For issues or questions, please contact the development team.
             """,
                 contact = @Contact(
                         name = "Backend Development Team",
@@ -59,24 +53,17 @@ import org.springframework.context.annotation.Configuration;
                 )
         ),
         servers = {
-                @Server(
-                        description = "Local Development Server",
-                        url = "http://localhost:8080/api"
-                ),
-                @Server(
-                        description = "Production Server",
-                        url = "https://api.massagebooking.com/api"
-                )
+                @Server(description = "Local Development Server", url = "http://localhost:8080"),
+                @Server(description = "Production Server", url = "https://api.massagebooking.com")
         }
 )
 @SecurityScheme(
-        name = "Bearer Authentication",
-        description = "JWT authentication token. Obtain by logging in via /api/v1/auth/login",
+        name = "bearer-jwt",
+        description = "JWT authentication token. Obtain by logging in via /v1/auth/login",
         scheme = "bearer",
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
         in = SecuritySchemeIn.HEADER
 )
 public class OpenApiConfig {
-
 }

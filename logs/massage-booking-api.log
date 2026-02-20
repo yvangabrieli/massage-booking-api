@@ -231,3 +231,3180 @@ Caused by: org.hibernate.query.sqm.PathElementException: Could not resolve attri
 	at org.hibernate.query.hql.internal.StandardHqlTranslator.translate(StandardHqlTranslator.java:64) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
 	... 79 common frames omitted
 
+2026-02-20T18:36:54.417+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] c.m.b.MassageBookingApiApplication       : Starting MassageBookingApiApplication using Java 24.0.2 with PID 90463 (/Users/macbookpro/IdeaProjects/massage-booking-api/target/classes started by macbookpro in /Users/macbookpro/IdeaProjects/massage-booking-api)
+2026-02-20T18:36:54.420+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] c.m.b.MassageBookingApiApplication       : Running with Spring Boot v4.0.2, Spring v7.0.3
+2026-02-20T18:36:54.421+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] c.m.b.MassageBookingApiApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-02-20T18:36:54.493+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-02-20T18:36:54.493+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-02-20T18:36:56.107+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-20T18:36:56.233+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 109 ms. Found 6 JPA repository interfaces.
+2026-02-20T18:36:57.420+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-20T18:36:57.456+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-20T18:36:57.457+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-20T18:36:57.566+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3072 ms
+2026-02-20T18:36:57.951+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-20T18:36:58.328+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@250f4e86
+2026-02-20T18:36:58.331+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-20T18:36:58.475+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-20T18:36:58.580+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-20T18:36:59.327+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-20T18:36:59.570+01:00  WARN 90463 --- [massage-booking-api] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-20T18:36:59.612+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/massage_booking_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: massage_booking_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-20T18:37:01.156+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-20T18:37:01.781+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    alter table bookings 
+       add constraint FKqb0hw90djslecy59mnes8lbtq 
+       foreign key (client_id) 
+       references clients (id)
+2026-02-20T18:37:02.109+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    alter table bookings 
+       add constraint FKjcwbou2jlblfwu14uoxs65b25 
+       foreign key (service_id) 
+       references services (id)
+2026-02-20T18:37:02.334+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-20T18:37:02.487+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-20T18:37:02.863+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] c.m.booking.security.JwtAuthFilter       : Filter 'jwtAuthFilter' configured for use
+2026-02-20T18:37:04.705+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-02-20T18:37:04.706+01:00  WARN 90463 --- [massage-booking-api] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-02-20T18:37:04.919+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-02-20T18:37:05.638+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2026-02-20T18:37:05.737+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/api'
+2026-02-20T18:37:05.751+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] c.m.b.MassageBookingApiApplication       : Started MassageBookingApiApplication in 12.2 seconds (process running for 13.209)
+2026-02-20T18:37:05.900+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.921+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.924+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.927+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.930+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.933+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.936+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.939+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.942+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.945+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.948+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.951+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.956+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.959+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.962+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.966+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.970+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.974+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.977+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.980+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.985+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.989+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.992+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.996+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:05.999+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.002+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.006+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.009+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.012+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.014+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.018+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.021+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.024+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.027+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.029+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.032+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.034+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.036+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.039+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.042+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.046+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.049+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.069+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.078+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.082+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.086+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.092+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.133+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.169+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.191+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.207+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.257+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.261+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.267+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.274+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.304+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.310+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.338+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.435+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.442+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.447+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.471+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.478+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.615+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.725+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.735+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.741+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.750+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.764+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.773+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.779+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.783+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.790+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.794+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.798+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.803+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.807+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.810+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.813+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.822+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.827+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.834+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.840+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.854+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.894+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.937+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.976+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:06.992+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:07.001+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:07.005+01:00 DEBUG 90463 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:37:07.029+01:00  INFO 90463 --- [massage-booking-api] [restartedMain] c.m.booking.config.TimeSlotInitializer   : Time slots generated for next 3 months (Thu-Sun only)
+2026-02-20T18:37:10.094+01:00  INFO 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-20T18:37:10.094+01:00  INFO 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-20T18:37:10.101+01:00  INFO 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
+2026-02-20T18:37:10.138+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui.html
+2026-02-20T18:37:10.165+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:10.173+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui.html
+2026-02-20T18:37:10.313+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.html
+2026-02-20T18:37:10.315+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:10.316+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.html
+2026-02-20T18:37:10.512+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:10.513+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:10.514+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:10.514+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:10.514+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:10.515+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:10.515+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:10.515+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:10.516+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.css
+2026-02-20T18:37:10.517+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:10.517+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.css
+2026-02-20T18:37:10.514+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:10.520+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:10.521+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:10.519+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:12.200+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /api-docs/swagger-config
+2026-02-20T18:37:12.207+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/favicon-32x32.png
+2026-02-20T18:37:12.207+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:12.212+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:12.214+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/favicon-32x32.png
+2026-02-20T18:37:12.239+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:12.260+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-20T18:37:12.262+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:12.263+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:15.842+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.html
+2026-02-20T18:37:15.844+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:15.845+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.html
+2026-02-20T18:37:15.964+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:15.966+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:15.965+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:15.965+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.css
+2026-02-20T18:37:15.970+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:15.970+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:15.970+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:15.971+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:15.971+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:15.971+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:15.971+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:15.971+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.css
+2026-02-20T18:37:16.005+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:16.009+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:16.015+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:16.238+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /api-docs/swagger-config
+2026-02-20T18:37:16.239+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:16.242+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:16.244+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-20T18:37:16.245+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:16.246+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:18.961+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.html
+2026-02-20T18:37:18.963+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:18.963+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.html
+2026-02-20T18:37:19.001+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:19.002+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:19.002+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:19.002+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.css
+2026-02-20T18:37:19.002+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:19.002+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:19.003+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:19.003+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:19.003+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:19.004+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:19.004+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.css
+2026-02-20T18:37:19.005+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:19.008+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:19.016+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:19.018+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:19.172+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api-docs/swagger-config
+2026-02-20T18:37:19.174+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:19.175+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:19.176+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/favicon-32x32.png
+2026-02-20T18:37:19.179+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:19.180+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/favicon-32x32.png
+2026-02-20T18:37:19.180+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-20T18:37:19.182+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:19.183+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:32.071+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.html
+2026-02-20T18:37:32.073+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.075+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.html
+2026-02-20T18:37:32.119+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:32.119+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:32.119+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:32.119+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.css
+2026-02-20T18:37:32.121+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.119+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:32.121+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.122+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.122+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.123+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.css
+2026-02-20T18:37:32.123+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:32.123+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:32.122+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.124+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:32.125+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:32.365+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /api-docs/swagger-config
+2026-02-20T18:37:32.366+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.366+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/favicon-32x32.png
+2026-02-20T18:37:32.367+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.369+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:32.368+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/favicon-32x32.png
+2026-02-20T18:37:32.371+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-20T18:37:32.372+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:32.373+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:41.569+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.html
+2026-02-20T18:37:41.574+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:41.576+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.html
+2026-02-20T18:37:41.769+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:41.770+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.css
+2026-02-20T18:37:41.771+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:41.773+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:41.773+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:41.774+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:41.775+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:41.775+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:41.775+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:37:41.775+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:41.776+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui.css
+2026-02-20T18:37:41.776+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.css
+2026-02-20T18:37:41.777+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:37:41.780+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:41.785+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:37:42.807+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /api-docs/swagger-config
+2026-02-20T18:37:42.808+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:42.811+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:37:42.814+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-20T18:37:42.816+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:37:42.817+01:00 DEBUG 90463 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:38:08.013+01:00  INFO 90463 --- [massage-booking-api] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-20T18:38:08.038+01:00  INFO 90463 --- [massage-booking-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-20T18:38:08.088+01:00  INFO 90463 --- [massage-booking-api] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-20T18:38:08.137+01:00  INFO 90463 --- [massage-booking-api] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-20T18:38:08.181+01:00  INFO 90463 --- [massage-booking-api] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-20T18:41:55.040+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] c.m.b.MassageBookingApiApplication       : Starting MassageBookingApiApplication using Java 24.0.2 with PID 90532 (/Users/macbookpro/IdeaProjects/massage-booking-api/target/classes started by macbookpro in /Users/macbookpro/IdeaProjects/massage-booking-api)
+2026-02-20T18:41:55.043+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] c.m.b.MassageBookingApiApplication       : Running with Spring Boot v4.0.2, Spring v7.0.3
+2026-02-20T18:41:55.044+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] c.m.b.MassageBookingApiApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-02-20T18:41:55.115+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-02-20T18:41:55.115+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-02-20T18:41:56.791+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-20T18:41:57.300+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 489 ms. Found 6 JPA repository interfaces.
+2026-02-20T18:41:59.130+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-20T18:41:59.151+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-20T18:41:59.151+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-20T18:41:59.214+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 4098 ms
+2026-02-20T18:41:59.517+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-20T18:41:59.817+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@13cc39c5
+2026-02-20T18:41:59.820+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-20T18:41:59.970+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-20T18:42:00.071+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-20T18:42:00.858+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-20T18:42:00.963+01:00  WARN 90532 --- [massage-booking-api] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-20T18:42:00.979+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/massage_booking_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: massage_booking_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-20T18:42:03.154+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-20T18:42:03.319+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-20T18:42:03.430+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-20T18:42:03.744+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] c.m.booking.security.JwtAuthFilter       : Filter 'jwtAuthFilter' configured for use
+2026-02-20T18:42:06.238+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-02-20T18:42:06.241+01:00  WARN 90532 --- [massage-booking-api] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-02-20T18:42:06.468+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-02-20T18:42:07.327+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2026-02-20T18:42:07.429+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/api'
+2026-02-20T18:42:07.442+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] c.m.b.MassageBookingApiApplication       : Started MassageBookingApiApplication in 13.124 seconds (process running for 13.911)
+2026-02-20T18:42:07.658+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.677+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.681+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.684+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.686+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.689+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.692+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.695+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.700+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.703+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.706+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.708+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.711+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.713+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.717+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.720+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.722+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.724+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.727+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.732+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.734+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.737+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.740+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.743+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.746+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.750+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.753+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.757+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.759+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.762+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.765+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.769+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.772+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.777+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.784+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.788+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.791+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.795+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.801+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.804+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.807+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.810+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.812+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.819+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.825+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.828+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.833+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.838+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.841+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.844+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.848+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.852+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.856+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.859+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.863+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.873+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.878+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.887+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.890+01:00  INFO 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-20T18:42:07.891+01:00  INFO 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-20T18:42:07.900+01:00  INFO 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 9 ms
+2026-02-20T18:42:07.904+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.911+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.918+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.924+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.928+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.934+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.941+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.947+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.952+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui.html
+2026-02-20T18:42:07.956+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.960+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.963+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.968+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.973+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.976+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.977+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:07.982+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.988+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.989+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui.html
+2026-02-20T18:42:07.992+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:07.995+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.000+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.003+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.006+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.008+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.011+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.014+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.018+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.021+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.024+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.029+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.034+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.038+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.041+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.044+01:00 DEBUG 90532 --- [massage-booking-api] [restartedMain] org.hibernate.SQL                        : 
+    /* SELECT
+        w.id id 
+    FROM
+        WorkingDay w 
+    WHERE
+        w.dayOfWeek = :dayOfWeek 
+        AND w.isActive = TRUE */ select
+            wd1_0.id 
+        from
+            working_days wd1_0 
+        where
+            wd1_0.day_of_week=? 
+            and wd1_0.is_active=true 
+        limit
+            ?
+2026-02-20T18:42:08.060+01:00  INFO 90532 --- [massage-booking-api] [restartedMain] c.m.booking.config.TimeSlotInitializer   : Time slots generated for next 3 months (Thu-Sun only)
+2026-02-20T18:42:08.156+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.html
+2026-02-20T18:42:08.158+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:08.159+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.html
+2026-02-20T18:42:08.243+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.css
+2026-02-20T18:42:08.243+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui.css
+2026-02-20T18:42:08.244+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:08.244+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:08.245+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.css
+2026-02-20T18:42:08.247+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:42:08.245+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui.css
+2026-02-20T18:42:08.247+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:42:08.248+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:42:08.249+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:08.249+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:08.249+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:08.251+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:42:08.252+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:42:08.253+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:42:09.664+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /api-docs/swagger-config
+2026-02-20T18:42:09.666+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:09.667+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/favicon-32x32.png
+2026-02-20T18:42:09.668+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:09.669+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/favicon-32x32.png
+2026-02-20T18:42:09.687+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:42:09.701+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-20T18:42:09.704+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:09.704+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-8] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:42:18.085+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui.html
+2026-02-20T18:42:18.089+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:18.091+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui.html
+2026-02-20T18:42:18.138+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.html
+2026-02-20T18:42:18.139+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:18.139+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.html
+2026-02-20T18:42:18.179+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:42:18.179+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/index.css
+2026-02-20T18:42:18.182+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:18.183+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:18.183+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/index.css
+2026-02-20T18:42:18.183+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-02-20T18:42:18.185+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui.css
+2026-02-20T18:42:18.186+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:18.190+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui.css
+2026-02-20T18:42:18.549+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:42:18.549+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:42:18.554+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:18.554+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:18.555+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-02-20T18:42:18.555+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /swagger-ui/swagger-initializer.js
+2026-02-20T18:42:19.033+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /api-docs/swagger-config
+2026-02-20T18:42:19.035+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:19.036+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:42:19.038+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-02-20T18:42:19.039+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-20T18:42:19.040+01:00 DEBUG 90532 --- [massage-booking-api] [http-nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-02-20T18:45:19.799+01:00  INFO 90532 --- [massage-booking-api] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-20T18:45:19.834+01:00  INFO 90532 --- [massage-booking-api] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-20T18:45:19.878+01:00  INFO 90532 --- [massage-booking-api] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-20T18:45:19.933+01:00  INFO 90532 --- [massage-booking-api] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-20T18:45:20.021+01:00  INFO 90532 --- [massage-booking-api] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
