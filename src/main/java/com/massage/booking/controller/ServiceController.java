@@ -3,7 +3,7 @@ package com.massage.booking.controller;
 import com.massage.booking.dto.request.ServiceRequest;
 import com.massage.booking.dto.response.ServiceResponse;
 import com.massage.booking.entity.enums.ServiceCategory;
-import com.massage.booking.service.MassageServiceService;
+import com.massage.booking.service.MassageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ import java.util.List;
 @Tag(name = "Services", description = "Massage service management endpoints")
 public class ServiceController {
 
-    private final MassageServiceService massageServiceService;
+    private final MassageService massageServiceService;
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
