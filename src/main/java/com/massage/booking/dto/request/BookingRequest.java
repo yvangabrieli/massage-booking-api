@@ -1,16 +1,19 @@
 package com.massage.booking.dto.request;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingRequest {
@@ -22,9 +25,10 @@ public class BookingRequest {
     @Future(message = "Start time must be in the future")
     private LocalDateTime startTime;
 
-    @Size(max = 100)
+    @Size(max = 100, message = "Guest name must not exceed 100 characters")
     private String guestName;
 
-    @Pattern(regexp = "^\\+?[0-9]{9,15}$", message = "Invalid phone format")
+    @Pattern(regexp = "^\\+?[0-9\\s\\-\\(\\)]{7,20}$",
+            message = "Invalid phone number format")
     private String guestPhone;
 }
