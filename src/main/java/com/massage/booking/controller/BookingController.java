@@ -3,8 +3,8 @@ package com.massage.booking.controller;
 import com.massage.booking.dto.request.BookingRequest;
 import com.massage.booking.dto.response.BookingResponse;
 import com.massage.booking.entity.enums.BookingStatus;
+import com.massage.booking.entity.valueobject.Email;
 import com.massage.booking.repository.UserRepository;
-import com.massage.booking.entity.valueobject.Phone;
 import com.massage.booking.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,8 +37,7 @@ public class BookingController {
             @AuthenticationPrincipal UserDetails userDetails) {
 
         Long clientId = extractClientId(userDetails);
-        BookingResponse response = bookingService.create(clientId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookingService.create(clientId, request));
     }
 
     @GetMapping("/{id}")
@@ -48,17 +47,18 @@ public class BookingController {
     }
 
     @GetMapping
-    @Operation(summary = "List all bookings (Admin) or client bookings")
+    @Operation(summary = "List all bookings (Admin/SubAdmin) or client bookings")
     public ResponseEntity<Page<BookingResponse>> getAll(
             @PageableDefault(size = 20, sort = "startTime") Pageable pageable,
             @RequestParam(required = false) BookingStatus status,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        boolean isAdmin = userDetails.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        boolean isAdminOrSubAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")
+                        || a.getAuthority().equals("ROLE_SUBADMIN"));
 
         Page<BookingResponse> bookings;
-        if (isAdmin) {
+        if (isAdminOrSubAdmin) {
             bookings = bookingService.getAll(pageable, status);
         } else {
             Long clientId = extractClientId(userDetails);
@@ -66,6 +66,24 @@ public class BookingController {
         }
 
         return ResponseEntity.ok(bookings);
+    }
+
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Update booking status (Admin/SubAdmin only)")
+    public ResponseEntity<BookingResponse> updateStatus(
+            @PathVariable Long id,
+            @RequestParam BookingStatus status,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        boolean isAdminOrSubAdmin = userDetails.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")
+                        || a.getAuthority().equals("ROLE_SUBADMIN"));
+
+        if (!isAdminOrSubAdmin) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        return ResponseEntity.ok(bookingService.updateStatus(id, status));
     }
 
     @DeleteMapping("/{id}")
@@ -84,8 +102,8 @@ public class BookingController {
     }
 
     private Long extractClientId(UserDetails userDetails) {
-        Phone phone = Phone.of(userDetails.getUsername());
-        return userRepository.findByPhone(phone)
+        Email email = Email.of(userDetails.getUsername());
+        return userRepository.findByEmailAndActiveTrue(email)
                 .orElseThrow(() -> new IllegalStateException("Authenticated user not found"))
                 .getId();
     }

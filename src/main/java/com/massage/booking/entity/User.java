@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE) // Only factory methods can create
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
 
     @Id
@@ -33,7 +33,7 @@ public class User {
     @Embedded
     private Email email;
 
-    @Column(nullable = false, name = "password")  // Store hashed password
+    @Column(nullable = false, name = "password")
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
@@ -60,7 +60,6 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    // ✅ DDD: Factory method to create User
     public static User createClient(
             String name,
             String phoneNumber,
@@ -68,9 +67,8 @@ public class User {
             String rawPassword,
             PasswordEncoder encoder
     ) {
-        // ✅ Value Objects validate automatically!
         Phone phone = Phone.of(phoneNumber);
-        Email email = Email.of(emailAddress);  // Can be null (optional)
+        Email email = Email.of(emailAddress);
         Password password = Password.fromRaw(rawPassword, encoder);
 
         User user = new User();
@@ -80,7 +78,6 @@ public class User {
         user.setPasswordHash(password.getHashedValue());
         user.setRole(Role.ROLE_CLIENT);
         user.setActive(true);
-
         return user;
     }
 
@@ -96,34 +93,37 @@ public class User {
         return user;
     }
 
-    // ✅ DDD: Business logic methods
+    public void promoteToSubAdmin() {
+        if (this.role == Role.ROLE_ADMIN) {
+            throw new IllegalStateException("User is already an admin");
+        }
+        this.role = Role.ROLE_SUBADMIN;
+    }
 
-    /**
-     * Check if password matches
-     */
+    public void demoteToClient() {
+        if (this.role == Role.ROLE_CLIENT) {
+            throw new IllegalStateException("User is already a client");
+        }
+        if (this.role == Role.ROLE_ADMIN) {
+            throw new IllegalStateException("Cannot demote an admin");
+        }
+        this.role = Role.ROLE_CLIENT;
+    }
+
     public boolean checkPassword(String rawPassword, PasswordEncoder encoder) {
         Password password = Password.fromHashed(this.passwordHash);
         return password.matches(rawPassword, encoder);
     }
 
-    /**
-     * Change password
-     */
     public void changePassword(String newRawPassword, PasswordEncoder encoder) {
         Password newPassword = Password.fromRaw(newRawPassword, encoder);
         this.passwordHash = newPassword.getHashedValue();
     }
 
-    /**
-     * Business rule: Check if user can login
-     */
     public boolean canLogin() {
         return this.active;
     }
 
-    /**
-     * Business rule: Deactivate user
-     */
     public void deactivate() {
         if (!this.active) {
             throw new IllegalStateException("User is already deactivated");
@@ -131,9 +131,6 @@ public class User {
         this.active = false;
     }
 
-    /**
-     * Business rule: Activate user
-     */
     public void activate() {
         if (this.active) {
             throw new IllegalStateException("User is already active");
@@ -141,30 +138,22 @@ public class User {
         this.active = true;
     }
 
-    /**
-     * Check if user is admin
-     */
     public boolean isAdmin() {
         return this.role == Role.ROLE_ADMIN;
     }
 
-    /**
-     * Check if user is client
-     */
+    public boolean isSubAdmin() {
+        return this.role == Role.ROLE_SUBADMIN;
+    }
+
     public boolean isClient() {
         return this.role == Role.ROLE_CLIENT;
     }
 
-    /**
-     * Get phone number as string (for responses)
-     */
     public String getPhoneNumber() {
         return phone != null ? phone.getValue() : null;
     }
 
-    /**
-     * Get email as string (for responses)
-     */
     public String getEmailAddress() {
         return email != null ? email.getValue() : null;
     }

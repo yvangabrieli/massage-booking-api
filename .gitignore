@@ -4,6 +4,15 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Environment Variables - NEVER COMMIT THESE ###
+.env
+*.env
+!.env.example
+
+### Logs ###
+logs/
+*.log
+
 ### STS ###
 .apt_generated
 .classpath
@@ -31,3 +40,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Mac ###
+.DS_Store

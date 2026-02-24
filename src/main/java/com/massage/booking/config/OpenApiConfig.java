@@ -53,8 +53,8 @@ import org.springframework.context.annotation.Configuration;
                 )
         ),
         servers = {
-                @Server(description = "Local Development Server", url = "http://localhost:8080"),
-                @Server(description = "Production Server", url = "https://api.massagebooking.com")
+                @Server(description = "Local Development Server", url = "http://localhost:8080/api"),
+                @Server(description = "Production Server", url = "https://api.massagebooking.com/api")
         }
 )
 @SecurityScheme(

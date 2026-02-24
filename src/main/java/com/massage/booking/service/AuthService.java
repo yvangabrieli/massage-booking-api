@@ -24,22 +24,21 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailNotificationService emailNotificationService;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        log.info("Registering new user with phone: {}", request.getPhone());
+        log.info("Registering new user with email: {}", request.getEmail());
 
         Phone phone = Phone.of(request.getPhone());
+        Email email = Email.of(request.getEmail());
 
         if (userRepository.existsByPhone(phone)) {
             throw new DuplicateResourceException("Phone number already registered: " + request.getPhone());
         }
 
-        if (request.getEmail() != null && !request.getEmail().isBlank()) {
-            Email email = Email.of(request.getEmail());
-            if (userRepository.existsByEmail(email)) {
-                throw new DuplicateResourceException("Email already registered: " + request.getEmail());
-            }
+        if (userRepository.existsByEmail(email)) {
+            throw new DuplicateResourceException("Email already registered: " + request.getEmail());
         }
 
         User user = User.createClient(
@@ -52,29 +51,27 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
         log.info("User registered successfully with id: {}", savedUser.getId());
+
+        emailNotificationService.sendWelcomeEmail(savedUser.getEmailAddress(), savedUser.getName());
+
         return buildAuthResponse(savedUser);
     }
 
     @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
-        log.info("Login attempt for phone: {}", request.getPhone());
+        log.info("Login attempt for email: {}", request.getEmail());
 
-        Phone phone = Phone.of(request.getPhone());
+        Email email = Email.of(request.getEmail());
 
-        User user = userRepository.findByPhone(phone)
+        User user = userRepository.findByEmailAndActiveTrue(email)
                 .orElseThrow(() -> {
-                    log.warn("Login failed - phone not found: {}", request.getPhone());
-                    return new UnauthorizedException("Invalid phone or password");
+                    log.warn("Login failed - email not found: {}", request.getEmail());
+                    return new UnauthorizedException("Invalid email or password");
                 });
 
-        if (!user.canLogin()) {
-            log.warn("Login failed - user deactivated: {}", request.getPhone());
-            throw new UnauthorizedException("Account is deactivated");
-        }
-
         if (!user.checkPassword(request.getPassword(), passwordEncoder)) {
-            log.warn("Login failed - wrong password: {}", request.getPhone());
-            throw new UnauthorizedException("Invalid phone or password");
+            log.warn("Login failed - wrong password for email: {}", request.getEmail());
+            throw new UnauthorizedException("Invalid email or password");
         }
 
         log.info("Login successful for user: {}", user.getId());
@@ -82,7 +79,7 @@ public class AuthService {
     }
 
     private AuthResponse buildAuthResponse(User user) {
-        String token = jwtUtil.generateToken(user.getPhoneNumber(), user.getRole().name());
+        String token = jwtUtil.generateToken(user.getEmailAddress(), user.getRole().name());
 
         return AuthResponse.builder()
                 .token(token)

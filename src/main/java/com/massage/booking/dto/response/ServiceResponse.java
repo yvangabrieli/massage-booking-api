@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -18,6 +19,7 @@ public class ServiceResponse {
     private String name;
     private ServiceCategory category;
     private Integer durationMinutes;
+    private BigDecimal price;
     private String description;
     private Boolean active;
     private LocalDateTime createdAt;
@@ -32,6 +34,7 @@ public class ServiceResponse {
         private ServiceCategory category;
         private Integer durationMinutes;
         private Integer cleanupMinutes;
+        private BigDecimal price;
         private String description;
         private Boolean active;
         private LocalDateTime createdAt;

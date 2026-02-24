@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,7 +31,10 @@ public class MassageService {
     private Integer durationMinutes;
 
     @Column(nullable = false)
-    private Integer cleanupMinutes = 10;  // Hidden from clients
+    private Integer cleanupMinutes = 10;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
 
     @Column(length = 500)
     private String description;
@@ -60,16 +64,19 @@ public class MassageService {
             ServiceCategory category,
             Integer durationMinutes,
             Integer cleanupMinutes,
+            BigDecimal price,
             String description
     ) {
         validateDuration(durationMinutes);
         validateCleanup(cleanupMinutes);
+        validatePrice(price);
 
         MassageService service = new MassageService();
         service.setName(name);
         service.setCategory(category);
         service.setDurationMinutes(durationMinutes);
         service.setCleanupMinutes(cleanupMinutes != null ? cleanupMinutes : 10);
+        service.setPrice(price);
         service.setDescription(description);
         service.setActive(true);
         return service;
@@ -79,7 +86,7 @@ public class MassageService {
         if (minutes == null || minutes <= 0) {
             throw new IllegalArgumentException("Duration must be greater than 0");
         }
-        if (minutes > 300) {  // 5 hours max
+        if (minutes > 300) {
             throw new IllegalArgumentException("Duration cannot exceed 300 minutes");
         }
     }
@@ -90,11 +97,18 @@ public class MassageService {
         }
     }
 
+    private static void validatePrice(BigDecimal price) {
+        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Price must be zero or greater");
+        }
+    }
+
     public void updateDetails(
             String name,
             ServiceCategory category,
             Integer durationMinutes,
             Integer cleanupMinutes,
+            BigDecimal price,
             String description
     ) {
         if (durationMinutes != null) {
@@ -104,6 +118,10 @@ public class MassageService {
         if (cleanupMinutes != null) {
             validateCleanup(cleanupMinutes);
             this.cleanupMinutes = cleanupMinutes;
+        }
+        if (price != null) {
+            validatePrice(price);
+            this.price = price;
         }
         if (name != null && !name.isBlank()) {
             this.name = name;
@@ -127,7 +145,6 @@ public class MassageService {
         }
         this.active = true;
     }
-
 
     public Integer getTotalMinutes() {
         return durationMinutes + cleanupMinutes;

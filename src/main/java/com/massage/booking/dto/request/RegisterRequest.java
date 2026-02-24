@@ -8,19 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for user registration request
- *
- * @NotBlank  → field cannot be null or empty string
- * @Size      → min/max length
- * @Email     → must be valid email format
- * @Pattern   → must match regex
- *
- * Note: These annotations validate the RAW input from frontend
- * BEFORE it reaches the service layer.
- * Value Objects then validate again when created.
- * Double protection! ✅
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,8 +24,9 @@ public class RegisterRequest {
     )
     private String phone;
 
+    @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    private String email; // Optional - no @NotBlank
+    private String email;
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")

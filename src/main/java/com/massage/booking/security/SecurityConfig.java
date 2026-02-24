@@ -45,19 +45,26 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-resources/**").permitAll()
                         .requestMatchers("/webjars/**").permitAll()
 
-                        // Public - Actuator
+                        // Public - Actuator health
                         .requestMatchers("/actuator/health").permitAll()
 
-                        // Public - View services
+                        // Public - View services and availability
                         .requestMatchers(HttpMethod.GET, "/v1/services/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/availability/**").permitAll()
 
-                        // Admin only
+                        // Admin only - full CRUD on services, clients, admin panel
                         .requestMatchers("/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/v1/services/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/v1/services/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/v1/services/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/v1/clients/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/v1/clients/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/v1/clients/**").hasAuthority("ROLE_ADMIN")
 
-                        // All other endpoints require authentication
+                        // Admin + SubAdmin - read clients and bookings, update booking status
+                        .requestMatchers(HttpMethod.GET, "/v1/clients/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUBADMIN")
+
+                        // All authenticated - bookings
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

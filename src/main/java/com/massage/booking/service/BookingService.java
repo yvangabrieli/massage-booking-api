@@ -5,12 +5,14 @@ import com.massage.booking.dto.response.BookingResponse;
 import com.massage.booking.entity.Booking;
 import com.massage.booking.entity.Client;
 import com.massage.booking.entity.MassageService;
+import com.massage.booking.entity.User;
 import com.massage.booking.entity.enums.BookingStatus;
 import com.massage.booking.exception.BusinessException;
 import com.massage.booking.exception.ResourceNotFoundException;
 import com.massage.booking.repository.BookingRepository;
 import com.massage.booking.repository.ClientRepository;
 import com.massage.booking.repository.MassageServiceRepository;
+import com.massage.booking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,15 +35,19 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final ClientRepository clientRepository;
     private final MassageServiceRepository serviceRepository;
+    private final UserRepository userRepository;
     private final TimeSlotService timeSlotService;
+    private final EmailNotificationService emailNotificationService;
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public BookingResponse create(Long clientId, BookingRequest request) {
-        log.info("Creating booking for client: {}, service: {}, time: {}",
-                clientId, request.getServiceId(), request.getStartTime());
+    public BookingResponse create(Long userId, BookingRequest request) {
+        log.info("Creating booking for user: {}, service: {}, time: {}",
+                userId, request.getServiceId(), request.getStartTime());
 
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new ResourceNotFoundException("Client", clientId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+
+        Client client = clientRepository.findById(userId).orElse(null);
 
         MassageService service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service", request.getServiceId()));
@@ -53,11 +59,10 @@ public class BookingService {
         }
 
         LocalDateTime endTime = request.getStartTime().plusMinutes(service.getTotalMinutes());
-
         checkAvailability(request.getStartTime(), endTime);
 
         Booking booking = Booking.create(
-                clientId,
+                userId,
                 service.getId(),
                 request.getStartTime(),
                 service.getTotalMinutes(),
@@ -70,25 +75,34 @@ public class BookingService {
             saved = bookingRepository.save(booking);
             timeSlotService.bookSlot(request.getStartTime());
         } catch (DataIntegrityViolationException e) {
-            log.warn("Concurrent booking attempt detected for time slot: {}", request.getStartTime());
             throw new BusinessException("Time slot was just booked by another user. Please select a different time.",
                     HttpStatus.CONFLICT);
         }
+
+        emailNotificationService.sendBookingConfirmation(
+                user.getEmailAddress(),
+                user.getName(),
+                service.getName(),
+                request.getStartTime()
+        );
 
         log.info("Booking created successfully with id: {}", saved.getId());
         return mapToResponse(saved, client, service);
     }
 
     @Transactional
-    public void cancel(Long id, Long clientId, boolean isAdmin, String reason) {
+    public void cancel(Long id, Long userId, boolean isAdmin, String reason) {
         log.info("Canceling booking: {}, admin: {}", id, isAdmin);
 
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
 
-        if (!isAdmin && !booking.getClientId().equals(clientId)) {
+        if (!isAdmin && !booking.getClientId().equals(userId)) {
             throw new BusinessException("Cannot cancel other client's booking", HttpStatus.FORBIDDEN);
         }
+
+        MassageService service = serviceRepository.findById(booking.getServiceId()).orElse(null);
+        User user = userRepository.findById(booking.getClientId()).orElse(null);
 
         if (isAdmin) {
             booking.adminCancel(reason);
@@ -101,38 +115,58 @@ public class BookingService {
 
         bookingRepository.save(booking);
         timeSlotService.releaseSlot(booking.getStartTime());
+
+        if (user != null && service != null) {
+            emailNotificationService.sendBookingCancellation(
+                    user.getEmailAddress(),
+                    user.getName(),
+                    service.getName(),
+                    booking.getStartTime(),
+                    reason
+            );
+        }
+
         log.info("Booking canceled: {}", id);
     }
 
-    @Transactional(readOnly = true)
-    public BookingResponse getById(Long id) {
-        log.info("Getting booking by id: {}", id);
+    @Transactional
+    public BookingResponse updateStatus(Long id, BookingStatus newStatus) {
+        log.info("Updating booking {} status to {}", id, newStatus);
 
         Booking booking = bookingRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
 
+        switch (newStatus) {
+            case COMPLETED -> booking.complete();
+            case NO_SHOW -> booking.markNoShow();
+            case CANCELED -> booking.cancel("Cancelled by admin");
+            default -> throw new BusinessException("Invalid status transition", HttpStatus.BAD_REQUEST);
+        }
+
+        bookingRepository.save(booking);
+        return mapToResponse(booking, booking.getClient(), booking.getService());
+    }
+
+    @Transactional(readOnly = true)
+    public BookingResponse getById(Long id) {
+        Booking booking = bookingRepository.findByIdWithDetails(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
         return mapToResponse(booking, booking.getClient(), booking.getService());
     }
 
     @Transactional(readOnly = true)
     public Page<BookingResponse> getAll(Pageable pageable, BookingStatus status) {
-        log.info("Getting all bookings - status: {}", status);
-
         Page<Booking> bookings = status != null
                 ? bookingRepository.findByStatus(status, pageable)
                 : bookingRepository.findAll(pageable);
-
         return bookings.map(this::mapToResponseFromJoin);
     }
 
     @Transactional(readOnly = true)
     public Page<BookingResponse> getByClient(Long clientId, Pageable pageable, BookingStatus status) {
-        log.info("Getting bookings for client: {}, status: {}", clientId, status);
-
         Page<Booking> bookings = status != null
                 ? bookingRepository.findByClientIdAndStatus(clientId, status, pageable)
                 : bookingRepository.findByClientId(clientId, pageable);
-
         return bookings.map(this::mapToResponseFromJoin);
     }
 
@@ -140,7 +174,6 @@ public class BookingService {
         if (!timeSlotService.isTimeSlotAvailable(startTime)) {
             throw new BusinessException("Selected time slot is not available", HttpStatus.CONFLICT);
         }
-
         List<Booking> conflicts = bookingRepository.findConflictingBookings(startTime, endTime);
         if (!conflicts.isEmpty()) {
             throw new BusinessException("Time slot already booked", HttpStatus.CONFLICT);
@@ -149,7 +182,6 @@ public class BookingService {
 
     private void validateBookingRules(LocalDateTime startTime) {
         Duration until = Duration.between(LocalDateTime.now(), startTime);
-
         if (until.toHours() < 2) {
             throw new BusinessException("Must book at least 2 hours in advance", HttpStatus.BAD_REQUEST);
         }

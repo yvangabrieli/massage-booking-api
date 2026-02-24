@@ -34,6 +34,7 @@ public class ServiceCatalogService {
                 request.getCategory(),
                 request.getDurationMinutes(),
                 request.getCleanupMinutes(),
+                request.getPrice(),
                 request.getDescription()
         );
 
@@ -44,7 +45,6 @@ public class ServiceCatalogService {
 
     @Transactional(readOnly = true)
     public ServiceResponse getById(Long id) {
-        log.info("Getting service by id: {}", id);
         com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service", id));
         return mapToPublicResponse(service);
@@ -52,7 +52,6 @@ public class ServiceCatalogService {
 
     @Transactional(readOnly = true)
     public ServiceResponse.AdminServiceResponse getByIdAdmin(Long id) {
-        log.info("Getting service (admin) by id: {}", id);
         com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service", id));
         return mapToAdminResponse(service);
@@ -60,8 +59,6 @@ public class ServiceCatalogService {
 
     @Transactional(readOnly = true)
     public List<ServiceResponse> getAll(ServiceCategory category, Boolean activeOnly) {
-        log.info("Getting all services - category: {}, activeOnly: {}", category, activeOnly);
-
         List<com.massage.booking.entity.MassageService> services;
 
         if (category != null && (activeOnly == null || activeOnly)) {
@@ -77,8 +74,6 @@ public class ServiceCatalogService {
 
     @Transactional
     public ServiceResponse.AdminServiceResponse update(Long id, ServiceRequest request) {
-        log.info("Updating service id: {}", id);
-
         com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service", id));
 
@@ -87,6 +82,7 @@ public class ServiceCatalogService {
                 request.getCategory(),
                 request.getDurationMinutes(),
                 request.getCleanupMinutes(),
+                request.getPrice(),
                 request.getDescription()
         );
 
@@ -97,11 +93,8 @@ public class ServiceCatalogService {
 
     @Transactional
     public void delete(Long id) {
-        log.info("Deleting service id: {}", id);
-
         com.massage.booking.entity.MassageService service = serviceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Service", id));
-
         service.deactivate();
         serviceRepository.save(service);
         log.info("Service deactivated: {}", id);
@@ -113,6 +106,7 @@ public class ServiceCatalogService {
                 .name(service.getName())
                 .category(service.getCategory())
                 .durationMinutes(service.getDurationMinutes())
+                .price(service.getPrice())
                 .description(service.getDescription())
                 .active(service.getActive())
                 .createdAt(service.getCreatedAt())
@@ -126,6 +120,7 @@ public class ServiceCatalogService {
                 .category(service.getCategory())
                 .durationMinutes(service.getDurationMinutes())
                 .cleanupMinutes(service.getCleanupMinutes())
+                .price(service.getPrice())
                 .description(service.getDescription())
                 .active(service.getActive())
                 .createdAt(service.getCreatedAt())
