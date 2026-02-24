@@ -4,6 +4,7 @@ import com.massage.booking.dto.request.ClientRequest;
 import com.massage.booking.dto.response.ClientResponse;
 import com.massage.booking.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Clients", description = "Client management endpoints")
+@SecurityRequirement(name = "bearer-jwt")
 public class ClientController {
 
     private final ClientService clientService;
@@ -31,22 +33,20 @@ public class ClientController {
     @Operation(summary = "Create client", description = "Admin only")
     public ResponseEntity<ClientResponse> create(@Valid @RequestBody ClientRequest request) {
         log.info("POST /v1/clients");
-        ClientResponse response = clientService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientService.create(request));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @Operation(summary = "Get client by ID", description = "Admin only")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUBADMIN')")
+    @Operation(summary = "Get client by ID", description = "Admin and SubAdmin")
     public ResponseEntity<ClientResponse> getById(@PathVariable Long id) {
         log.info("GET /v1/clients/{}", id);
-        ClientResponse response = clientService.getById(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(clientService.getById(id));
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @Operation(summary = "Get all clients", description = "Admin only, paginated")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUBADMIN')")
+    @Operation(summary = "Get all clients", description = "Admin and SubAdmin, paginated")
     public ResponseEntity<Page<ClientResponse>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
@@ -55,8 +55,7 @@ public class ClientController {
     ) {
         log.info("GET /v1/clients - page: {}, size: {}", page, size);
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<ClientResponse> response = clientService.getAll(pageable, active, search);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(clientService.getAll(pageable, active, search));
     }
 
     @PutMapping("/{id}")
@@ -67,8 +66,7 @@ public class ClientController {
             @Valid @RequestBody ClientRequest request
     ) {
         log.info("PUT /v1/clients/{}", id);
-        ClientResponse response = clientService.update(id, request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(clientService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
