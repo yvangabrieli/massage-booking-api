@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional; // FIX #10
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,6 +26,7 @@ public class AdminController {
 
     @PatchMapping("/users/{id}/promote")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Transactional // FIX #10: was missing @Transactional — DB write without it may not commit
     @Operation(summary = "Promote a client to SubAdmin", description = "Admin only")
     public ResponseEntity<AuthResponse.UserInfo> promoteToSubAdmin(@PathVariable Long id) {
         log.info("Promoting user {} to SUBADMIN", id);
@@ -35,18 +37,12 @@ public class AdminController {
         user.promoteToSubAdmin();
         userRepository.save(user);
 
-        return ResponseEntity.ok(AuthResponse.UserInfo.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .phone(user.getPhoneNumber())
-                .email(user.getEmailAddress())
-                .role(user.getRole())
-                .active(user.getActive())
-                .build());
+        return ResponseEntity.ok(buildUserInfo(user));
     }
 
     @PatchMapping("/users/{id}/demote")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Transactional // FIX #10
     @Operation(summary = "Demote a SubAdmin back to Client", description = "Admin only")
     public ResponseEntity<AuthResponse.UserInfo> demoteToClient(@PathVariable Long id) {
         log.info("Demoting user {} to CLIENT", id);
@@ -57,13 +53,17 @@ public class AdminController {
         user.demoteToClient();
         userRepository.save(user);
 
-        return ResponseEntity.ok(AuthResponse.UserInfo.builder()
+        return ResponseEntity.ok(buildUserInfo(user));
+    }
+
+    private AuthResponse.UserInfo buildUserInfo(User user) {
+        return AuthResponse.UserInfo.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .phone(user.getPhoneNumber())
                 .email(user.getEmailAddress())
                 .role(user.getRole())
                 .active(user.getActive())
-                .build());
+                .build();
     }
 }

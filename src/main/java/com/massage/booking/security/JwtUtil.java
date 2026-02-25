@@ -21,12 +21,13 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    public String generateToken(String phone, String role) {
+    // FIX #6: renamed parameter from 'phone' to 'email' — JWT subject is email
+    public String generateToken(String email, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
-                .subject(phone)
+                .subject(email)
                 .claim("role", role)
                 .issuedAt(now)
                 .expiration(expiryDate)
@@ -47,7 +48,8 @@ public class JwtUtil {
         }
     }
 
-    public String extractPhone(String token) {
+    // FIX #6: renamed from extractPhone to extractEmail — subject holds email
+    public String extractEmail(String token) {
         return extractClaims(token).getSubject();
     }
 

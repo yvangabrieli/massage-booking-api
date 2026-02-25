@@ -45,7 +45,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(
             @Valid @RequestBody LoginRequest request) {
 
-        log.info("POST /v1/auth/login - phone: {}", request.getEmail());
+        log.info("POST /v1/auth/login - email: {}", request.getEmail());
 
         AuthResponse response = authService.login(request);
 

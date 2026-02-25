@@ -14,18 +14,19 @@ import java.util.Optional;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
+    boolean existsByPhone(Phone phone);
+
     Optional<Client> findByPhone(Phone phone);
 
-    boolean existsByPhone(Phone phone);
+    // FIX #1: Required to resolve userId → client record
+    Optional<Client> findByUserId(Long userId);
 
     Page<Client> findByActiveTrue(Pageable pageable);
 
-    @Query("SELECT c FROM Client c WHERE " +
-            "LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "AND (:active IS NULL OR c.active = :active)")
-    Page<Client> searchClients(
-            @Param("search") String search,
-            @Param("active") Boolean active,
-            Pageable pageable
-    );
+    @Query("SELECT c FROM Client c WHERE c.active = :active AND " +
+           "(LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           "c.phone.value LIKE CONCAT('%', :search, '%'))")
+    Page<Client> searchClients(@Param("search") String search,
+                               @Param("active") Boolean active,
+                               Pageable pageable);
 }

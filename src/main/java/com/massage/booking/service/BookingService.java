@@ -47,7 +47,13 @@ public class BookingService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
-        Client client = clientRepository.findById(userId).orElse(null);
+        // FIX #1: Look up Client by userId (the foreign key link), not by the user's own ID
+        Client client = clientRepository.findByUserId(userId).orElse(null);
+
+        // The clientId stored in the booking must reference the clients table.
+        // If there is a linked Client record use client.getId(), otherwise fall back to userId
+        // so the booking is still stored (guest-style, no client profile).
+        Long bookingClientId = (client != null) ? client.getId() : userId;
 
         MassageService service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service", request.getServiceId()));
@@ -62,7 +68,7 @@ public class BookingService {
         checkAvailability(request.getStartTime(), endTime);
 
         Booking booking = Booking.create(
-                userId,
+                bookingClientId,
                 service.getId(),
                 request.getStartTime(),
                 service.getTotalMinutes(),
@@ -97,12 +103,20 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
 
-        if (!isAdmin && !booking.getClientId().equals(userId)) {
+        // Resolve the client for the authenticated user so we can compare correctly
+        Client callerClient = clientRepository.findByUserId(userId).orElse(null);
+        Long callerClientId = (callerClient != null) ? callerClient.getId() : userId;
+
+        if (!isAdmin && !booking.getClientId().equals(callerClientId)) {
             throw new BusinessException("Cannot cancel other client's booking", HttpStatus.FORBIDDEN);
         }
 
         MassageService service = serviceRepository.findById(booking.getServiceId()).orElse(null);
-        User user = userRepository.findById(booking.getClientId()).orElse(null);
+        // Fetch user via client record for email notification
+        Client ownerClient = clientRepository.findById(booking.getClientId()).orElse(null);
+        User ownerUser = (ownerClient != null && ownerClient.getUserId() != null)
+                ? userRepository.findById(ownerClient.getUserId()).orElse(null)
+                : null;
 
         if (isAdmin) {
             booking.adminCancel(reason);
@@ -116,10 +130,10 @@ public class BookingService {
         bookingRepository.save(booking);
         timeSlotService.releaseSlot(booking.getStartTime());
 
-        if (user != null && service != null) {
+        if (ownerUser != null && service != null) {
             emailNotificationService.sendBookingCancellation(
-                    user.getEmailAddress(),
-                    user.getName(),
+                    ownerUser.getEmailAddress(),
+                    ownerUser.getName(),
                     service.getName(),
                     booking.getStartTime(),
                     reason
@@ -164,9 +178,14 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public Page<BookingResponse> getByClient(Long clientId, Pageable pageable, BookingStatus status) {
+        // clientId here is the user's ID (from JWT). Resolve to client.id first.
+        Long resolvedClientId = clientRepository.findByUserId(clientId)
+                .map(Client::getId)
+                .orElse(clientId);
+
         Page<Booking> bookings = status != null
-                ? bookingRepository.findByClientIdAndStatus(clientId, status, pageable)
-                : bookingRepository.findByClientId(clientId, pageable);
+                ? bookingRepository.findByClientIdAndStatus(resolvedClientId, status, pageable)
+                : bookingRepository.findByClientId(resolvedClientId, pageable);
         return bookings.map(this::mapToResponseFromJoin);
     }
 
