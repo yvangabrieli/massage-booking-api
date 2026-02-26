@@ -40,31 +40,32 @@ public class BookingService {
     private final EmailNotificationService emailNotificationService;
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public BookingResponse create(Long clientIdFromAuth, BookingRequest request) {
-        log.info("Creating booking for clientId: {}, service: {}, time: {}",
-                clientIdFromAuth, request.getServiceId(), request.getStartTime());
+    public BookingResponse create(Long userId, BookingRequest request) {
+        log.info("Creating booking for userId: {}, service: {}, time: {}",
+                userId, request.getServiceId(), request.getStartTime());
 
-        // 1️⃣ Ensure Client exists — create if missing
-        Client client = clientRepository.findById(clientIdFromAuth)
+        // 1️⃣ Load User (must exist)
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+
+        // 2️⃣ Find client by userId, or auto-create from user account
+        // ✅ FIX: use findByUserId() not findById() — controller passes USER id, not client id
+        Client client = clientRepository.findByUserId(userId)
                 .orElseGet(() -> {
-                    // Create a new client if not found
-                    Client newClient = Client.create(
-                            request.getGuestName(),     // name from request
-                            request.getGuestPhone(),    // phone from request
-                            request.getGuestEmail(),    // email from request
-                            null,                       // birthday unknown
-                            null,                       // notes
-                            null                        // other field if any
-                    );
-                    newClient.setId(clientIdFromAuth); // link to auth id if needed
+                    log.info("No client record for userId {}, creating automatically", userId);
+                    Client newClient = new Client();
+                    newClient.setUserId(user.getId());
+                    newClient.setName(user.getName());
+                    newClient.setEmail(user.getEmail());
+                    newClient.setPhone(user.getPhone());
                     return clientRepository.save(newClient);
                 });
 
-        // 2️⃣ Load Service
+        // 3️⃣ Load Service
         MassageService service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service", request.getServiceId()));
 
-        // 3️⃣ Validate booking rules
+        // 4️⃣ Validate booking rules
         validateBookingRules(request.getStartTime());
 
         if (!timeSlotService.isWorkingDay(request.getStartTime().toLocalDate())) {
@@ -74,9 +75,9 @@ public class BookingService {
         LocalDateTime endTime = request.getStartTime().plusMinutes(service.getTotalMinutes());
         checkAvailability(request.getStartTime(), endTime);
 
-        // 4️⃣ Create Booking with real clientId
+        // 5️⃣ Create Booking
         Booking booking = Booking.create(
-                client.getId(),          // guaranteed to exist
+                client.getId(),
                 service.getId(),
                 request.getStartTime(),
                 service.getTotalMinutes(),
@@ -95,23 +96,20 @@ public class BookingService {
             );
         }
 
-        // 5️⃣ Send confirmation email safely
+        // 6️⃣ Send confirmation email — never rolls back the booking if it fails
         try {
             emailNotificationService.sendBookingConfirmation(
-                    client.getEmail()  != null ? client.getEmail().getValue() : null,     // email from client
-                    client.getName(),         // name from client
+                    user.getEmailAddress(),
+                    user.getName(),
                     service.getName(),
                     request.getStartTime()
             );
         } catch (Exception e) {
-            log.error("Failed to send booking confirmation email for client {}: {}", client.getId(), e.getMessage());
-            // Do NOT rollback booking if email fails
+            log.error("Failed to send confirmation email for booking {}: {}", saved.getId(), e.getMessage());
         }
 
-        // 6️⃣ Log success
         log.info("Booking created successfully with id: {}", saved.getId());
 
-        // 7️⃣ Return response
         return mapToResponse(saved, client, service);
     }
 
@@ -148,13 +146,17 @@ public class BookingService {
         timeSlotService.releaseSlot(booking.getStartTime());
 
         if (ownerUser != null && service != null) {
-            emailNotificationService.sendBookingCancellation(
-                    ownerUser.getEmailAddress(),
-                    ownerUser.getName(),
-                    service.getName(),
-                    booking.getStartTime(),
-                    reason
-            );
+            try {
+                emailNotificationService.sendBookingCancellation(
+                        ownerUser.getEmailAddress(),
+                        ownerUser.getName(),
+                        service.getName(),
+                        booking.getStartTime(),
+                        reason
+                );
+            } catch (Exception e) {
+                log.error("Failed to send cancellation email for booking {}: {}", id, e.getMessage());
+            }
         }
 
         log.info("Booking canceled: {}", id);
@@ -187,7 +189,6 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public Page<BookingResponse> getAll(Pageable pageable, BookingStatus status) {
-        // ✅ FIX: use JOIN FETCH queries so client+service are never null
         Page<Booking> bookings = status != null
                 ? bookingRepository.findByStatusWithDetails(status, pageable)
                 : bookingRepository.findAllWithDetails(pageable);
@@ -196,12 +197,10 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public Page<BookingResponse> getByClient(Long userId, Pageable pageable, BookingStatus status) {
-        // Resolve user ID → client ID
         Long resolvedClientId = clientRepository.findByUserId(userId)
                 .map(Client::getId)
                 .orElse(userId);
 
-        // ✅ FIX: use JOIN FETCH queries so client+service are never null
         Page<Booking> bookings = status != null
                 ? bookingRepository.findByClientIdAndStatusWithDetails(resolvedClientId, status, pageable)
                 : bookingRepository.findByClientIdWithDetails(resolvedClientId, pageable);
