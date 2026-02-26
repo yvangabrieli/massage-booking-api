@@ -17,6 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -27,9 +32,29 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final UserDetailsServiceImpl userDetailsService;
 
+    // FIX #7: CORS configuration — allows the React frontend to communicate
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",   // Vite dev server
+                "http://localhost:3000",   // CRA fallback
+                "http://localhost:4173"    // Vite preview
+        ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // FIX #7: enable CORS
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -52,7 +77,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v1/services/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/availability/**").permitAll()
 
-                        // Admin only - full CRUD on services, clients, admin panel
+                        // Admin only
                         .requestMatchers("/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST, "/v1/services/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/v1/services/**").hasAuthority("ROLE_ADMIN")
@@ -61,7 +86,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/v1/clients/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/v1/clients/**").hasAuthority("ROLE_ADMIN")
 
-                        // Admin + SubAdmin - read clients and bookings, update booking status
+                        // Admin + SubAdmin - read clients
                         .requestMatchers(HttpMethod.GET, "/v1/clients/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_SUBADMIN")
 
                         // All authenticated - bookings

@@ -31,4 +31,7 @@ public class BookingRequest {
     @Pattern(regexp = "^\\+?[0-9\\s\\-\\(\\)]{7,20}$",
             message = "Invalid phone number format")
     private String guestPhone;
+
+    @Pattern(regexp = "^[\\w.-]+@[\\w.-]+\\.\\w{2,}$", message = "Invalid email format")
+    private String guestEmail;
 }
