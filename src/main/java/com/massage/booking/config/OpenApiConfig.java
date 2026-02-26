@@ -44,7 +44,7 @@ import org.springframework.context.annotation.Configuration;
             """,
                 contact = @Contact(
                         name = "Backend Development Team",
-                        email = "Tokamemassage@gmail.com",
+                        email = "TokameApi@gmail.com",
                         url = "https://github.com/yvangabrieli/massage-booking-api"
                 ),
                 license = @License(

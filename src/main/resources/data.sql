@@ -9,7 +9,7 @@ VALUES (
     'Admin User',
     '+34600000000',
     'admin@massage.com',
-    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+    '$2a$10$Mr1wb6J/TvkDo2y8hB8KeuoLoI5ERjZ1l1.NEbdeHCS.wJVDMH51W',
     'ROLE_ADMIN',
     true,
     NOW(),

@@ -40,24 +40,31 @@ public class BookingService {
     private final EmailNotificationService emailNotificationService;
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public BookingResponse create(Long userId, BookingRequest request) {
-        log.info("Creating booking for user: {}, service: {}, time: {}",
-                userId, request.getServiceId(), request.getStartTime());
+    public BookingResponse create(Long clientIdFromAuth, BookingRequest request) {
+        log.info("Creating booking for clientId: {}, service: {}, time: {}",
+                clientIdFromAuth, request.getServiceId(), request.getStartTime());
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+        // 1️⃣ Ensure Client exists — create if missing
+        Client client = clientRepository.findById(clientIdFromAuth)
+                .orElseGet(() -> {
+                    // Create a new client if not found
+                    Client newClient = Client.create(
+                            request.getGuestName(),     // name from request
+                            request.getGuestPhone(),    // phone from request
+                            request.getGuestEmail(),    // email from request
+                            null,                       // birthday unknown
+                            null,                       // notes
+                            null                        // other field if any
+                    );
+                    newClient.setId(clientIdFromAuth); // link to auth id if needed
+                    return clientRepository.save(newClient);
+                });
 
-        // FIX #1: Look up Client by userId (the foreign key link), not by the user's own ID
-        Client client = clientRepository.findByUserId(userId).orElse(null);
-
-        // The clientId stored in the booking must reference the clients table.
-        // If there is a linked Client record use client.getId(), otherwise fall back to userId
-        // so the booking is still stored (guest-style, no client profile).
-        Long bookingClientId = (client != null) ? client.getId() : userId;
-
+        // 2️⃣ Load Service
         MassageService service = serviceRepository.findById(request.getServiceId())
                 .orElseThrow(() -> new ResourceNotFoundException("Service", request.getServiceId()));
 
+        // 3️⃣ Validate booking rules
         validateBookingRules(request.getStartTime());
 
         if (!timeSlotService.isWorkingDay(request.getStartTime().toLocalDate())) {
@@ -67,8 +74,9 @@ public class BookingService {
         LocalDateTime endTime = request.getStartTime().plusMinutes(service.getTotalMinutes());
         checkAvailability(request.getStartTime(), endTime);
 
+        // 4️⃣ Create Booking with real clientId
         Booking booking = Booking.create(
-                bookingClientId,
+                client.getId(),          // guaranteed to exist
                 service.getId(),
                 request.getStartTime(),
                 service.getTotalMinutes(),
@@ -81,18 +89,29 @@ public class BookingService {
             saved = bookingRepository.save(booking);
             timeSlotService.bookSlot(request.getStartTime());
         } catch (DataIntegrityViolationException e) {
-            throw new BusinessException("Time slot was just booked by another user. Please select a different time.",
-                    HttpStatus.CONFLICT);
+            throw new BusinessException(
+                    "Time slot was just booked by another user. Please select a different time.",
+                    HttpStatus.CONFLICT
+            );
         }
 
-        emailNotificationService.sendBookingConfirmation(
-                user.getEmailAddress(),
-                user.getName(),
-                service.getName(),
-                request.getStartTime()
-        );
+        // 5️⃣ Send confirmation email safely
+        try {
+            emailNotificationService.sendBookingConfirmation(
+                    client.getEmail()  != null ? client.getEmail().getValue() : null,     // email from client
+                    client.getName(),         // name from client
+                    service.getName(),
+                    request.getStartTime()
+            );
+        } catch (Exception e) {
+            log.error("Failed to send booking confirmation email for client {}: {}", client.getId(), e.getMessage());
+            // Do NOT rollback booking if email fails
+        }
 
+        // 6️⃣ Log success
         log.info("Booking created successfully with id: {}", saved.getId());
+
+        // 7️⃣ Return response
         return mapToResponse(saved, client, service);
     }
 
@@ -103,7 +122,6 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking", id));
 
-        // Resolve the client for the authenticated user so we can compare correctly
         Client callerClient = clientRepository.findByUserId(userId).orElse(null);
         Long callerClientId = (callerClient != null) ? callerClient.getId() : userId;
 
@@ -112,7 +130,6 @@ public class BookingService {
         }
 
         MassageService service = serviceRepository.findById(booking.getServiceId()).orElse(null);
-        // Fetch user via client record for email notification
         Client ownerClient = clientRepository.findById(booking.getClientId()).orElse(null);
         User ownerUser = (ownerClient != null && ownerClient.getUserId() != null)
                 ? userRepository.findById(ownerClient.getUserId()).orElse(null)
@@ -170,22 +187,24 @@ public class BookingService {
 
     @Transactional(readOnly = true)
     public Page<BookingResponse> getAll(Pageable pageable, BookingStatus status) {
+        // ✅ FIX: use JOIN FETCH queries so client+service are never null
         Page<Booking> bookings = status != null
-                ? bookingRepository.findByStatus(status, pageable)
-                : bookingRepository.findAll(pageable);
+                ? bookingRepository.findByStatusWithDetails(status, pageable)
+                : bookingRepository.findAllWithDetails(pageable);
         return bookings.map(this::mapToResponseFromJoin);
     }
 
     @Transactional(readOnly = true)
-    public Page<BookingResponse> getByClient(Long clientId, Pageable pageable, BookingStatus status) {
-        // clientId here is the user's ID (from JWT). Resolve to client.id first.
-        Long resolvedClientId = clientRepository.findByUserId(clientId)
+    public Page<BookingResponse> getByClient(Long userId, Pageable pageable, BookingStatus status) {
+        // Resolve user ID → client ID
+        Long resolvedClientId = clientRepository.findByUserId(userId)
                 .map(Client::getId)
-                .orElse(clientId);
+                .orElse(userId);
 
+        // ✅ FIX: use JOIN FETCH queries so client+service are never null
         Page<Booking> bookings = status != null
-                ? bookingRepository.findByClientIdAndStatus(resolvedClientId, status, pageable)
-                : bookingRepository.findByClientId(resolvedClientId, pageable);
+                ? bookingRepository.findByClientIdAndStatusWithDetails(resolvedClientId, status, pageable)
+                : bookingRepository.findByClientIdWithDetails(resolvedClientId, pageable);
         return bookings.map(this::mapToResponseFromJoin);
     }
 
